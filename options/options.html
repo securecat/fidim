@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FIDIM 設定</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --color-secondary: #595959;
+      --color-success: #1a7a1a;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --color-secondary: #a0a0a0;
+        --color-success: #4caf50;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: sans-serif;
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 40px 24px;
+      background: Canvas;
+      color: CanvasText;
+    }
+
+    h1 {
+      font-size: 24px;
+      font-weight: bold;
+      letter-spacing: 0.05em;
+      margin-bottom: 32px;
+    }
+
+    h2 {
+      font-size: 15px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    section {
+      margin-bottom: 32px;
+    }
+
+    .field-description {
+      font-size: 13px;
+      color: var(--color-secondary);
+      margin-bottom: 12px;
+      line-height: 1.6;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      font-family: monospace;
+      font-size: 13px;
+      padding: 8px 10px;
+      border: 1px solid GrayText;
+      border-radius: 4px;
+      background: Canvas;
+      color: CanvasText;
+    }
+
+    input[type="text"]:focus {
+      outline: 2px solid LinkText;
+      outline-offset: 1px;
+      border-color: transparent;
+    }
+
+    button {
+      font-family: sans-serif;
+      font-size: 13px;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:focus-visible {
+      outline: 2px solid LinkText;
+      outline-offset: 2px;
+    }
+
+    .btn-primary {
+      background: LinkText;
+      color: Canvas;
+      border: none;
+    }
+
+    .btn-primary:hover {
+      outline: 2px solid LinkText;
+      outline-offset: 2px;
+    }
+
+    .btn-reset {
+      background: none;
+      color: var(--color-secondary);
+      border: 1px solid GrayText;
+    }
+
+    .btn-reset:hover {
+      box-shadow: inset 0 0 0 1px GrayText;
+    }
+
+    .status {
+      font-size: 12px;
+      color: var(--color-secondary);
+      margin-top: 8px;
+      min-height: 1.4em;
+    }
+
+    .status.saved {
+      color: var(--color-success);
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid GrayText;
+      opacity: 0.3;
+      margin-bottom: 32px;
+    }
+
+    .about {
+      font-size: 13px;
+      line-height: 1.8;
+      color: var(--color-secondary);
+    }
+
+    .about p + p {
+      margin-top: 12px;
+    }
+
+    .about h3 {
+      font-size: 13px;
+      font-weight: bold;
+      margin-top: 16px;
+      margin-bottom: 4px;
+      color: var(--color-secondary);
+    }
+
+    .postscript {
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <h1>FIDIM 設定</h1>
+
+  <section>
+    <h2>置き換えフォント</h2>
+    <p class="field-description">
+      読みにくいUIフォント（Yu Gothic UI、Meiryo UI）を置き換えるfont-familyの値を指定します。<br>
+      デフォルト: <code>sans-serif</code><br>
+      複数のフォントを指定する場合はCSSと同じ書き方で： <code>'Noto Sans JP', sans-serif</code>
+    </p>
+    <div class="input-row">
+      <input type="text" id="font-input" aria-label="置き換えフォント" spellcheck="false" placeholder="sans-serif">
+      <button class="btn-reset" id="reset-btn">リセット</button>
+      <button class="btn-primary" id="save-btn">保存</button>
+    </div>
+    <p class="status" id="status" aria-live="polite"></p>
+  </section>
+
+  <hr class="divider">
+
+  <section>
+    <h2>FIDIMについて</h2>
+    <div class="about">
+      <p>FIDIMは、長文テキストで読みにくいUIフォントを、読みやすくすっきりとした代替フォントに自動的に置き換えます。</p>
+      <h3>FIDIMを作った背景</h3>
+      <p>世の中にはWindowsでどう表示されるかを確認せずにリリースされたサイトが無数にあります。特に読み物サイトにおいて確認していないのは致命的で、CSSのfont指定で<code>system-ui</code>がどんな悲劇を引き起こすか、想像だにしていないのです。サイトのほうが修正してリリースするのが本筋ですが、指摘して回ることは現実的に不可能です……　しかし、とにもかくにも読みにくい！</p>
+      <p>あーもう、わかったよ。自分でどうにかするよ。（Fine. I'll do it myself.）</p>
+      <p>そうしてFIDIMが出来ましたとさ。めでたしめでたし…？</p>
+      <p class="postscript">追伸　FIDIMのネーミングは「フォントが読みにくいので、修正しました。（Font Is Difficult, I Modified.）」に由来しています。</p>
+    </div>
+  </section>
+
+  <script src="options.js" defer></script>
+</body>
+</html>
