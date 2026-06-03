@@ -17,11 +17,24 @@
       enabled = result[STORAGE_KEY_ENABLED];
       replacementFont = result[STORAGE_KEY_FONT] || DEFAULT_FONT;
       if (enabled) {
+        injectFontFaceOverrides();
         processAll();
         observe();
       }
     }
   );
+
+  // 「Anthropic Sans」などのダミーフォント名をsans-serifに差し替える
+  function injectFontFaceOverrides() {
+    const style = document.createElement('style');
+    style.textContent = `
+      @font-face {
+        font-family: 'Anthropic Sans';
+        src: local('Arial');
+      }
+    `;
+    document.head.appendChild(style);
+  }
 
   // 要素のfont-familyをチェックして必要なら上書き
   function processElement(el) {
