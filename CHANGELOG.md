@@ -5,6 +5,12 @@
 形式は [Keep a Changelog](https://keepachangelog.com/ja/1.1.0/) に準拠し、
 バージョン管理は [Semantic Versioning](https://semver.org/lang/ja/) に従います。
 
+## [1.2.1] - 2026-06-05
+
+### 削除
+
+- 設定画面（options）の「FIDIMについて」セクションを削除
+
 ## [1.2.0] - 2026-06-05
 
 ### 追加
