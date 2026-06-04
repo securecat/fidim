@@ -5,6 +5,7 @@
   const TRIGGER_FONTS = ['system-ui', '-apple-system', 'BlinkMacSystemFont'];
   const STORAGE_KEY_ENABLED = 'fidim_enabled';
   const STORAGE_KEY_FONT = 'fidim_font';
+  const STORAGE_KEY_EXCLUDED = 'fidim_excluded_hosts';
   const DEFAULT_FONT = 'sans-serif';
 
   let enabled = true;
@@ -12,11 +13,12 @@
 
   // ストレージから設定を読み込む
   chrome.storage.sync.get(
-    { [STORAGE_KEY_ENABLED]: true, [STORAGE_KEY_FONT]: DEFAULT_FONT },
+    { [STORAGE_KEY_ENABLED]: true, [STORAGE_KEY_FONT]: DEFAULT_FONT, [STORAGE_KEY_EXCLUDED]: [] },
     (result) => {
       enabled = result[STORAGE_KEY_ENABLED];
       replacementFont = result[STORAGE_KEY_FONT] || DEFAULT_FONT;
-      if (enabled) {
+      const excluded = result[STORAGE_KEY_EXCLUDED] || [];
+      if (enabled && !excluded.includes(location.hostname)) {
         injectFontFaceOverrides();
         processAll();
         observe();
