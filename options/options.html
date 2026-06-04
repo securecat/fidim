@@ -153,6 +153,53 @@
     .postscript {
       font-style: italic;
     }
+
+    .exclude-list {
+      list-style: none;
+      margin-top: 12px;
+    }
+
+    .exclude-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 0;
+      border-bottom: 1px solid GrayText;
+      font-size: 13px;
+      font-family: monospace;
+      opacity: 0.8;
+    }
+
+    .exclude-item:last-child {
+      border-bottom: none;
+    }
+
+    .exclude-item-remove {
+      font-family: sans-serif;
+      font-size: 12px;
+      color: var(--color-secondary);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 2px 6px;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+
+    .exclude-item-remove:hover {
+      color: CanvasText;
+    }
+
+    .exclude-item-remove:focus-visible {
+      outline: 2px solid LinkText;
+      outline-offset: 2px;
+    }
+
+    .exclude-empty {
+      font-size: 13px;
+      color: var(--color-secondary);
+      margin-top: 12px;
+    }
   </style>
 </head>
 <body>
@@ -171,6 +218,21 @@
       <button class="btn-primary" id="save-btn">保存</button>
     </div>
     <p class="status" id="status" aria-live="polite"></p>
+  </section>
+
+  <hr class="divider">
+
+  <section>
+    <h2>除外リスト</h2>
+    <p class="field-description">
+      フォント置換を適用しないサイトのドメインを登録します。レイアウトが崩れるサイトや、自分で管理するサイトの動作確認時などに活用できます。
+    </p>
+    <div class="input-row">
+      <input type="text" id="exclude-input" aria-label="除外するドメイン" spellcheck="false" placeholder="example.com">
+      <button class="btn-primary" id="exclude-add-btn">追加</button>
+    </div>
+    <ul id="exclude-list" class="exclude-list" aria-label="除外リスト" hidden aria-busy="true"></ul>
+    <p class="exclude-empty" id="exclude-empty" hidden>登録されているドメインはありません</p>
   </section>
 
   <hr class="divider">

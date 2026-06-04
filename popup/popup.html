@@ -7,6 +7,13 @@
   <style>
     :root {
       color-scheme: light dark;
+      --color-secondary: #262626;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --color-secondary: #c8c8c8;
+      }
     }
 
     * {
@@ -80,8 +87,41 @@
       outline-offset: 2px;
     }
 
+    .divider {
+      border: none;
+      border-top: 1px solid GrayText;
+      opacity: 0.3;
+      margin-bottom: 12px;
+    }
+
+    .exclude-section {
+      margin-bottom: 12px;
+    }
+
+    .exclude-btn {
+      font-family: sans-serif;
+      font-size: 12px;
+      color: var(--color-secondary);
+      background: none;
+      border: 1px solid GrayText;
+      border-radius: 4px;
+      padding: 5px 10px;
+      cursor: pointer;
+      width: 100%;
+      text-align: center;
+    }
+
+    .exclude-btn.is-excluded {
+      color: LinkText;
+      border-color: LinkText;
+    }
+
+    .exclude-btn:focus-visible {
+      outline: 2px solid LinkText;
+      outline-offset: 2px;
+    }
+
     .footer {
-      margin-top: 12px;
       text-align: right;
     }
 
@@ -114,6 +154,10 @@
       <input type="checkbox" class="toggle-input" id="toggle">
       <span id="toggle-label-text">有効</span>
     </label>
+  </div>
+  <hr class="divider">
+  <div class="exclude-section">
+    <button class="exclude-btn" id="exclude-btn">このサイトを除外</button>
   </div>
   <div class="footer">
     <button class="options-link" id="options-btn">設定</button>
