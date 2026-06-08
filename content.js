@@ -1,6 +1,6 @@
 (() => {
   // getComputedStyleで直書き指定として検出される場合（稀）
-  const UI_FONTS = ['Yu Gothic UI', 'Meiryo UI'];
+  const UI_FONTS = ['Yu Gothic UI', 'Meiryo UI', 'Yu Gothic'];
   // getComputedStyleで解決されずそのまま返されるUIフォント起因の指定
   const TRIGGER_FONTS = ['system-ui', '-apple-system', 'BlinkMacSystemFont'];
   const STORAGE_KEY_ENABLED = 'fidim_enabled';
