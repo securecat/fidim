@@ -5,6 +5,12 @@
 形式は [Keep a Changelog](https://keepachangelog.com/ja/1.1.0/) に準拠し、
 バージョン管理は [Semantic Versioning](https://semver.org/lang/ja/) に従います。
 
+## [1.3.0] - 2026-06-08
+
+### 追加
+
+- Yu Gothic（非UIバリアント）をフォント置換の対象に追加
+
 ## [1.2.2] - 2026-06-05
 
 ### 修正

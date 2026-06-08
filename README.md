@@ -37,10 +37,10 @@ https://chromewebstore.google.com/detail/fidim/bhnahaneodkjfpcofjdhogmhhbaodmcn
 
 ## 更新履歴
 
-### [1.2.2] - 2026-06-05
+### [1.3.0] - 2026-06-08
 
-#### 修正
+#### 追加
 
-- 設定画面・ポップアップの区切り線に `opacity: 0.3` を適用していたため、コントラスト比が基準を下回っていた問題を修正
+- Yu Gothic（非UIバリアント）をフォント置換の対象に追加
 
 全履歴は [CHANGELOG.md](CHANGELOG.md) を参照。
