@@ -12,9 +12,11 @@ FIDIMは、長文テキストにおいて読みにくいUIフォントを、読�
 
 ## インストール
 
-### Chrome Web Store
+### Chrome ウェブストア
 
-（準備中です）
+https://chromewebstore.google.com/detail/fidim/bhnahaneodkjfpcofjdhogmhhbaodmcn
+
+> Chrome ウェブストア版は、審査中のため最新リリースより古い場合があります。
 
 ### デベロッパーモード（手動インストール）
 
