@@ -41,6 +41,6 @@ https://chromewebstore.google.com/detail/fidim/bhnahaneodkjfpcofjdhogmhhbaodmcn
 
 #### 追加
 
-- Yu Gothic（非UIバリアント）をフォント置換の対象に追加
+- Yu Gothicも、macOSではイイ感じの太さで表示されるがWindowsでは細くて読みにくい。つまりこれを優先して指定するということは、macOSでしか表示確認してない可能性が高く、FIDIM置換の対象として追加
 
 全履歴は [CHANGELOG.md](CHANGELOG.md) を参照。
