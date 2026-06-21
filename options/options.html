@@ -285,7 +285,6 @@
 
     .exclude-status {
       margin-top: 8px;
-      min-height: 1.4em;
     }
 
     .exclude-status.error {
@@ -387,7 +386,7 @@
       <input type="text" id="exclude-input" aria-label="除外するドメイン" spellcheck="false" placeholder="example.com">
       <button class="btn-primary" id="exclude-add-btn">追加</button>
     </div>
-    <p class="exclude-status" id="exclude-status" aria-live="polite"></p>
+    <p class="exclude-status" id="exclude-status" aria-live="polite" hidden></p>
     <ul id="exclude-list" class="exclude-list" aria-label="除外リスト" hidden aria-busy="true"></ul>
     <p class="exclude-empty" id="exclude-empty" hidden>登録されているドメインはありません</p>
   </section>

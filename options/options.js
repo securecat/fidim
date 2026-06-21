@@ -212,11 +212,19 @@ excludeInput.addEventListener('input', () => {
 
 function isValidHostname(hostname) {
   if (!hostname || hostname.length > 253) return false;
-  return /^[a-zA-Z0-9][a-zA-Z0-9.\-]*[a-zA-Z0-9]$|^[a-zA-Z0-9]$/.test(hostname)
-    && !hostname.includes('..');
+  if (hostname.includes('..')) return false;
+  if (!hostname.includes('.')) return false;
+  return /^[a-zA-Z0-9][a-zA-Z0-9.\-]*[a-zA-Z0-9]$/.test(hostname);
 }
 
 function showExcludeStatus(message, type) {
+  if (!message) {
+    excludeStatus.hidden = true;
+    excludeStatus.textContent = '';
+    excludeStatus.className = 'exclude-status';
+    return;
+  }
+  excludeStatus.hidden = false;
   excludeStatus.textContent = message;
   excludeStatus.className = type ? `exclude-status ${type}` : 'exclude-status';
 }
