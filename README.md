@@ -46,4 +46,8 @@ https://chromewebstore.google.com/detail/fidim/bhnahaneodkjfpcofjdhogmhhbaodmcn
 - 個別選択時の組み込みグループ：system-ui / Yu Gothic UI / Meiryo UI、Yu Gothic、MS PGothic / ＭＳ Ｐゴシック、Meiryo / メイリオ
 - 個別選択時に任意のフォント名を追加し、置換対象に加えることができるようになった
 
+#### 変更
+
+- popupおよびoptions画面のアクセシビリティを全面的に改善。全テキストを16px以上に統一し、コントラスト比・フォーカス表示・WAI-ARIAの適用をWCAG 2.2 AAに準拠させた
+
 全履歴は [CHANGELOG.md](CHANGELOG.md) を参照。
