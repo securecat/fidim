@@ -175,11 +175,30 @@
       margin-bottom: 16px;
     }
 
-    .mode-label {
+    .mode-item {
       display: flex;
-      align-items: center;
       gap: 8px;
+      align-items: flex-start;
+    }
+
+    .mode-item input[type="radio"] {
+      margin-top: 3px;
+      flex-shrink: 0;
+    }
+
+    .mode-item label {
       cursor: pointer;
+    }
+
+    .mode-item-text {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .mode-desc {
+      color: var(--color-desc);
+      line-height: 1.5;
     }
 
     #selective-options {
@@ -275,14 +294,17 @@
     <h2>置換対象フォント</h2>
     <fieldset class="replace-mode">
       <legend class="visually-hidden">置換モード</legend>
-      <label class="mode-label">
-        <input type="radio" name="replace-mode" value="all">
-        すべてのフォント
-      </label>
-      <label class="mode-label">
-        <input type="radio" name="replace-mode" value="selective" checked>
-        個別に選択
-      </label>
+      <div class="mode-item">
+        <input type="radio" name="replace-mode" id="mode-all" value="all">
+        <div class="mode-item-text">
+          <label for="mode-all">すべてのフォント</label>
+          <p class="mode-desc">ウェブページで指定されているすべてのフォントを置換します</p>
+        </div>
+      </div>
+      <div class="mode-item">
+        <input type="radio" name="replace-mode" id="mode-selective" value="selective" checked>
+        <label for="mode-selective">個別に選択</label>
+      </div>
     </fieldset>
 
     <div id="selective-options">
