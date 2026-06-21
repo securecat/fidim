@@ -20,6 +20,10 @@
       }
     }
 
+    html {
+      scrollbar-gutter: stable;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -257,6 +261,11 @@
       color: var(--color-secondary);
       margin-top: 12px;
     }
+
+    .custom-font-item .btn-reset,
+    .exclude-item .btn-reset {
+      padding: 2px 8px;
+    }
   </style>
 </head>
 <body>
@@ -311,7 +320,7 @@
       <ul id="custom-font-list" class="custom-font-list" aria-label="追加したフォント" hidden aria-busy="true"></ul>
 
       <div class="input-row">
-        <input type="text" id="custom-font-input" aria-label="追加するフォント名" spellcheck="false" placeholder="フォント名を入力（例：Osaka）">
+        <input type="text" id="custom-font-input" aria-label="追加するフォント名" spellcheck="false" placeholder="フォント名を入力（例：'Osaka'）">
         <button class="btn-primary" id="custom-font-add-btn">追加</button>
       </div>
     </div>
