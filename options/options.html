@@ -8,12 +8,14 @@
     :root {
       color-scheme: light dark;
       --color-secondary: #262626;
+      --color-desc: #767676;
       --color-success: #1a7a1a;
     }
 
     @media (prefers-color-scheme: dark) {
       :root {
         --color-secondary: #c8c8c8;
+        --color-desc: #a0a0a0;
         --color-success: #4caf50;
       }
     }
@@ -26,6 +28,7 @@
 
     body {
       font-family: sans-serif;
+      font-size: 16px;
       max-width: 640px;
       margin: 0 auto;
       padding: 40px 24px;
@@ -41,7 +44,7 @@
     }
 
     h2 {
-      font-size: 15px;
+      font-size: 16px;
       font-weight: bold;
       margin-bottom: 8px;
     }
@@ -51,7 +54,6 @@
     }
 
     .field-description {
-      font-size: 13px;
       color: var(--color-secondary);
       margin-bottom: 12px;
       line-height: 1.6;
@@ -66,8 +68,8 @@
     input[type="text"] {
       flex: 1;
       font-family: monospace;
-      font-size: 13px;
-      padding: 8px 10px;
+      font-size: 16px;
+      padding: 10px 12px;
       border: 1px solid GrayText;
       border-radius: 4px;
       background: Canvas;
@@ -82,8 +84,8 @@
 
     button {
       font-family: sans-serif;
-      font-size: 13px;
-      padding: 8px 16px;
+      font-size: 16px;
+      padding: 10px 18px;
       border-radius: 4px;
       cursor: pointer;
     }
@@ -93,15 +95,23 @@
       outline-offset: 2px;
     }
 
+    button:disabled {
+      cursor: not-allowed;
+    }
+
     .btn-primary {
       background: LinkText;
       color: Canvas;
       border: none;
     }
 
-    .btn-primary:hover {
+    .btn-primary:hover:not(:disabled) {
       outline: 2px solid LinkText;
       outline-offset: 2px;
+    }
+
+    .btn-primary:disabled {
+      background: GrayText;
     }
 
     .btn-reset {
@@ -110,12 +120,15 @@
       border: 1px solid GrayText;
     }
 
-    .btn-reset:hover {
+    .btn-reset:hover:not(:disabled) {
       box-shadow: inset 0 0 0 1px GrayText;
     }
 
+    .btn-reset:disabled {
+      color: GrayText;
+    }
+
     .status {
-      font-size: 12px;
       color: var(--color-secondary);
       margin-top: 8px;
       min-height: 1.4em;
@@ -162,8 +175,11 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      font-size: 14px;
       cursor: pointer;
+    }
+
+    #selective-options {
+      padding-left: 2em;
     }
 
     .group-items {
@@ -180,7 +196,7 @@
     }
 
     .group-item input[type="checkbox"] {
-      margin-top: 2px;
+      margin-top: 3px;
       flex-shrink: 0;
     }
 
@@ -191,14 +207,12 @@
     }
 
     .group-label {
-      font-size: 13px;
       font-family: monospace;
       cursor: pointer;
     }
 
     .group-desc {
-      font-size: 12px;
-      color: var(--color-secondary);
+      color: var(--color-desc);
       line-height: 1.5;
     }
 
@@ -212,18 +226,12 @@
     .custom-font-item {
       display: flex;
       align-items: center;
-      padding: 6px 0;
-      border-bottom: 1px solid GrayText;
-      font-size: 13px;
+      gap: 8px;
+      padding: 4px 0;
       font-family: monospace;
     }
 
-    .custom-font-item:last-child {
-      border-bottom: none;
-    }
-
     .custom-font-item-label {
-      flex: 1;
       display: flex;
       align-items: center;
       gap: 8px;
@@ -240,40 +248,12 @@
     .exclude-item {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      padding: 6px 0;
-      border-bottom: 1px solid GrayText;
-      font-size: 13px;
+      gap: 8px;
+      padding: 4px 0;
       font-family: monospace;
     }
 
-    .exclude-item:last-child {
-      border-bottom: none;
-    }
-
-    .exclude-item-remove {
-      font-family: sans-serif;
-      font-size: 12px;
-      color: var(--color-secondary);
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 2px 6px;
-      border-radius: 3px;
-      flex-shrink: 0;
-    }
-
-    .exclude-item-remove:hover {
-      color: CanvasText;
-    }
-
-    .exclude-item-remove:focus-visible {
-      outline: 2px solid LinkText;
-      outline-offset: 2px;
-    }
-
     .exclude-empty {
-      font-size: 13px;
       color: var(--color-secondary);
       margin-top: 12px;
     }
@@ -301,28 +281,28 @@
         <div class="group-item">
           <input type="checkbox" id="group-system-ui" checked>
           <div class="group-item-text">
-            <label for="group-system-ui" class="group-label">system-ui, Yu Gothic UI, Meiryo UI</label>
+            <label for="group-system-ui" class="group-label">system-ui, 'Yu Gothic UI', 'Meiryo UI'</label>
             <p class="group-desc">Windowsでは本文にsystem-uiが適用されると過酷な閲覧体験となってしまう</p>
           </div>
         </div>
         <div class="group-item">
           <input type="checkbox" id="group-yu-gothic" checked>
           <div class="group-item-text">
-            <label for="group-yu-gothic" class="group-label">Yu Gothic</label>
+            <label for="group-yu-gothic" class="group-label">'Yu Gothic'</label>
             <p class="group-desc">WindowsではYu Gothicは細くて読みにくい</p>
           </div>
         </div>
         <div class="group-item">
           <input type="checkbox" id="group-ms-pgothic" checked>
           <div class="group-item-text">
-            <label for="group-ms-pgothic" class="group-label">MS PGothic, ＭＳ Ｐゴシック</label>
+            <label for="group-ms-pgothic" class="group-label">'MS PGothic', 'ＭＳ Ｐゴシック'</label>
             <p class="group-desc">小さいまたは標準的なフォントサイズでは読みやすさに欠ける</p>
           </div>
         </div>
         <div class="group-item">
           <input type="checkbox" id="group-meiryo" checked>
           <div class="group-item-text">
-            <label for="group-meiryo" class="group-label">Meiryo, メイリオ</label>
+            <label for="group-meiryo" class="group-label">'Meiryo', 'メイリオ'</label>
             <p class="group-desc">大きいフォントサイズの時に読みやすさに欠ける</p>
           </div>
         </div>

@@ -15,13 +15,14 @@ const BUILTIN_GROUP_IDS = ['system-ui', 'yu-gothic', 'ms-pgothic', 'meiryo'];
 // --- 置換対象フォント ---
 
 const selectiveOptions = document.getElementById('selective-options');
+let currentMode = 'selective';
 
 chrome.storage.sync.get(
   { [STORAGE_KEY_REPLACE_MODE]: 'selective', [STORAGE_KEY_BUILTIN_GROUPS]: DEFAULT_BUILTIN_GROUPS },
   (result) => {
     const mode = result[STORAGE_KEY_REPLACE_MODE];
     document.querySelector(`input[name="replace-mode"][value="${mode}"]`).checked = true;
-    updateSelectiveVisibility(mode);
+    updateSelectiveState(mode);
 
     const groups = { ...DEFAULT_BUILTIN_GROUPS, ...result[STORAGE_KEY_BUILTIN_GROUPS] };
     for (const id of BUILTIN_GROUP_IDS) {
@@ -35,7 +36,7 @@ document.querySelectorAll('input[name="replace-mode"]').forEach(radio => {
   radio.addEventListener('change', () => {
     const mode = document.querySelector('input[name="replace-mode"]:checked').value;
     chrome.storage.sync.set({ [STORAGE_KEY_REPLACE_MODE]: mode });
-    updateSelectiveVisibility(mode);
+    updateSelectiveState(mode);
   });
 });
 
@@ -49,8 +50,12 @@ BUILTIN_GROUP_IDS.forEach(id => {
   });
 });
 
-function updateSelectiveVisibility(mode) {
-  selectiveOptions.hidden = mode !== 'selective';
+function updateSelectiveState(mode) {
+  currentMode = mode;
+  const isSelective = mode === 'selective';
+  selectiveOptions.querySelectorAll('input, button').forEach(el => {
+    el.disabled = !isSelective;
+  });
 }
 
 // カスタムフォント
@@ -119,6 +124,7 @@ function renderCustomFontList(fonts) {
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
     checkbox.checked = enabled;
+    checkbox.disabled = currentMode !== 'selective';
     checkbox.addEventListener('change', () => toggleCustomFont(name, checkbox.checked));
 
     const span = document.createElement('span');
@@ -127,8 +133,9 @@ function renderCustomFontList(fonts) {
     label.append(checkbox, span);
 
     const removeBtn = document.createElement('button');
-    removeBtn.className = 'exclude-item-remove';
+    removeBtn.className = 'btn-reset';
     removeBtn.textContent = '削除';
+    removeBtn.disabled = currentMode !== 'selective';
     removeBtn.setAttribute('aria-label', `${name} を置換対象から削除`);
     removeBtn.addEventListener('click', () => removeCustomFont(name));
 
@@ -247,7 +254,7 @@ function renderExcludeList(hosts) {
       span.textContent = host;
 
       const removeBtn = document.createElement('button');
-      removeBtn.className = 'exclude-item-remove';
+      removeBtn.className = 'btn-reset';
       removeBtn.textContent = '削除';
       removeBtn.setAttribute('aria-label', `${host} を除外リストから削除`);
       removeBtn.addEventListener('click', () => removeExcludeHost(host));
