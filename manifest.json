@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "FIDIM",
   "version": "2.0.0",
-  "description": "Replaces unreadable UI fonts with a clean, readable alternative.",
+  "description": "Replaces hard-to-read Windows fonts with your preferred font. Choose which fonts to target, or replace them all at once.",
   "permissions": [
     "storage",
     "activeTab"
