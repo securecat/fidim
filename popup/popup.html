@@ -47,7 +47,7 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      font-size: 13px;
+      font-size: 16px;
       cursor: pointer;
     }
 
@@ -99,7 +99,7 @@
 
     .exclude-btn {
       font-family: sans-serif;
-      font-size: 12px;
+      font-size: 16px;
       color: var(--color-secondary);
       background: none;
       border: 1px solid GrayText;
@@ -126,7 +126,7 @@
 
     .options-link {
       font-family: sans-serif;
-      font-size: 11px;
+      font-size: 16px;
       color: LinkText;
       cursor: pointer;
       background: none;
@@ -143,6 +143,12 @@
       outline: 2px solid LinkText;
       outline-offset: 2px;
       border-radius: 2px;
+    }
+
+    .no-transition *,
+    .no-transition *::before,
+    .no-transition *::after {
+      transition: none !important;
     }
   </style>
 </head>

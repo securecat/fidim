@@ -27,10 +27,16 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
   });
 });
 
-// グローバル有効・無効状態を反映
+// グローバル有効・無効状態を反映（初期セット時はトランジションを止める）
+document.body.classList.add('no-transition');
 chrome.storage.sync.get({ [STORAGE_KEY_ENABLED]: true }, (result) => {
   toggle.checked = result[STORAGE_KEY_ENABLED];
   updateLabel(toggle.checked);
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      document.body.classList.remove('no-transition');
+    });
+  });
 });
 
 // グローバルトグル操作

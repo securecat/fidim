@@ -8,14 +8,22 @@
     :root {
       color-scheme: light dark;
       --color-secondary: #262626;
+      --color-desc: #767676;
       --color-success: #1a7a1a;
+      --color-error: #c00000;
     }
 
     @media (prefers-color-scheme: dark) {
       :root {
         --color-secondary: #c8c8c8;
+        --color-desc: #a0a0a0;
         --color-success: #4caf50;
+        --color-error: #ff6b6b;
       }
+    }
+
+    html {
+      scrollbar-gutter: stable;
     }
 
     * {
@@ -26,6 +34,7 @@
 
     body {
       font-family: sans-serif;
+      font-size: 16px;
       max-width: 640px;
       margin: 0 auto;
       padding: 40px 24px;
@@ -41,7 +50,7 @@
     }
 
     h2 {
-      font-size: 15px;
+      font-size: 16px;
       font-weight: bold;
       margin-bottom: 8px;
     }
@@ -51,7 +60,6 @@
     }
 
     .field-description {
-      font-size: 13px;
       color: var(--color-secondary);
       margin-bottom: 12px;
       line-height: 1.6;
@@ -66,8 +74,8 @@
     input[type="text"] {
       flex: 1;
       font-family: monospace;
-      font-size: 13px;
-      padding: 8px 10px;
+      font-size: 16px;
+      padding: 10px 12px;
       border: 1px solid GrayText;
       border-radius: 4px;
       background: Canvas;
@@ -82,8 +90,8 @@
 
     button {
       font-family: sans-serif;
-      font-size: 13px;
-      padding: 8px 16px;
+      font-size: 16px;
+      padding: 10px 18px;
       border-radius: 4px;
       cursor: pointer;
     }
@@ -93,15 +101,23 @@
       outline-offset: 2px;
     }
 
+    button:disabled {
+      cursor: not-allowed;
+    }
+
     .btn-primary {
       background: LinkText;
       color: Canvas;
       border: none;
     }
 
-    .btn-primary:hover {
+    .btn-primary:hover:not(:disabled) {
       outline: 2px solid LinkText;
       outline-offset: 2px;
+    }
+
+    .btn-primary:disabled {
+      background: GrayText;
     }
 
     .btn-reset {
@@ -110,12 +126,15 @@
       border: 1px solid GrayText;
     }
 
-    .btn-reset:hover {
+    .btn-reset:hover:not(:disabled) {
       box-shadow: inset 0 0 0 1px GrayText;
     }
 
+    .btn-reset:disabled {
+      color: GrayText;
+    }
+
     .status {
-      font-size: 12px;
       color: var(--color-secondary);
       margin-top: 8px;
       min-height: 1.4em;
@@ -131,6 +150,121 @@
       margin-bottom: 32px;
     }
 
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* 置換対象フォント */
+
+    fieldset {
+      border: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .replace-mode {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .mode-item {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+    }
+
+    .mode-item input[type="radio"] {
+      margin-top: 3px;
+      flex-shrink: 0;
+    }
+
+    .mode-item label {
+      cursor: pointer;
+    }
+
+    .mode-item-text {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .mode-desc {
+      color: var(--color-desc);
+      line-height: 1.5;
+    }
+
+    #selective-options {
+      padding-left: 2em;
+    }
+
+    .group-items {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .group-item {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .group-item input[type="checkbox"] {
+      margin-top: 3px;
+      flex-shrink: 0;
+    }
+
+    .group-item-text {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .group-label {
+      font-family: monospace;
+      cursor: pointer;
+    }
+
+    .group-desc {
+      color: var(--color-desc);
+      line-height: 1.5;
+    }
+
+    /* カスタムフォントリスト */
+
+    .custom-font-list {
+      list-style: none;
+      margin-bottom: 12px;
+    }
+
+    .custom-font-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 0;
+      font-family: monospace;
+    }
+
+    .custom-font-item-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    /* 除外リスト */
+
     .exclude-list {
       list-style: none;
       margin-top: 12px;
@@ -139,43 +273,27 @@
     .exclude-item {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      padding: 6px 0;
-      border-bottom: 1px solid GrayText;
-      font-size: 13px;
+      gap: 8px;
+      padding: 4px 0;
       font-family: monospace;
-      opacity: 0.8;
-    }
-
-    .exclude-item:last-child {
-      border-bottom: none;
-    }
-
-    .exclude-item-remove {
-      font-family: sans-serif;
-      font-size: 12px;
-      color: var(--color-secondary);
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 2px 6px;
-      border-radius: 3px;
-      flex-shrink: 0;
-    }
-
-    .exclude-item-remove:hover {
-      color: CanvasText;
-    }
-
-    .exclude-item-remove:focus-visible {
-      outline: 2px solid LinkText;
-      outline-offset: 2px;
     }
 
     .exclude-empty {
-      font-size: 13px;
       color: var(--color-secondary);
       margin-top: 12px;
+    }
+
+    .exclude-status {
+      margin-top: 8px;
+    }
+
+    .exclude-status.error {
+      color: var(--color-error);
+    }
+
+    .custom-font-item .btn-reset,
+    .exclude-item .btn-reset {
+      padding: 2px 8px;
     }
   </style>
 </head>
@@ -183,9 +301,69 @@
   <h1>FIDIM 設定</h1>
 
   <section>
+    <h2>置換対象フォント</h2>
+    <fieldset class="replace-mode">
+      <legend class="visually-hidden">置換モード</legend>
+      <div class="mode-item">
+        <input type="radio" name="replace-mode" id="mode-all" value="all">
+        <div class="mode-item-text">
+          <label for="mode-all">すべてのフォント</label>
+          <p class="mode-desc">ウェブページで指定されているすべてのフォントを置換します</p>
+        </div>
+      </div>
+      <div class="mode-item">
+        <input type="radio" name="replace-mode" id="mode-selective" value="selective" checked>
+        <label for="mode-selective">個別に選択</label>
+      </div>
+    </fieldset>
+
+    <div id="selective-options">
+      <div class="group-items">
+        <div class="group-item">
+          <input type="checkbox" id="group-system-ui" checked>
+          <div class="group-item-text">
+            <label for="group-system-ui" class="group-label">system-ui, 'Yu Gothic UI', 'Meiryo UI'</label>
+            <p class="group-desc">Windowsでは本文にsystem-uiが適用されると過酷な閲覧体験となってしまう</p>
+          </div>
+        </div>
+        <div class="group-item">
+          <input type="checkbox" id="group-yu-gothic" checked>
+          <div class="group-item-text">
+            <label for="group-yu-gothic" class="group-label">'Yu Gothic'</label>
+            <p class="group-desc">WindowsではYu Gothicは細くて読みにくい</p>
+          </div>
+        </div>
+        <div class="group-item">
+          <input type="checkbox" id="group-ms-pgothic" checked>
+          <div class="group-item-text">
+            <label for="group-ms-pgothic" class="group-label">'MS PGothic', 'ＭＳ Ｐゴシック'</label>
+            <p class="group-desc">小さいまたは標準的なフォントサイズでは読みやすさに欠ける</p>
+          </div>
+        </div>
+        <div class="group-item">
+          <input type="checkbox" id="group-meiryo" checked>
+          <div class="group-item-text">
+            <label for="group-meiryo" class="group-label">'Meiryo', 'メイリオ'</label>
+            <p class="group-desc">大きいフォントサイズの時に読みやすさに欠ける</p>
+          </div>
+        </div>
+      </div>
+
+      <ul id="custom-font-list" class="custom-font-list" aria-label="追加したフォント" hidden aria-busy="true"></ul>
+
+      <div class="input-row">
+        <input type="text" id="custom-font-input" aria-label="追加するフォント名" spellcheck="false" placeholder="フォント名を入力（例：'Osaka'）">
+        <button class="btn-primary" id="custom-font-add-btn">追加</button>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <section>
     <h2>置き換えフォント</h2>
     <p class="field-description">
-      読みにくいUIフォント（Yu Gothic UI、Meiryo UI）を置き換えるfont-familyの値を指定します。<br>
+      置換対象として選択したフォントを置き換えるfont-familyの値を指定します。<br>
       デフォルト: <code>sans-serif</code><br>
       複数のフォントを指定する場合はCSSと同じ書き方で： <code>'Noto Sans JP', sans-serif</code>
     </p>
@@ -208,6 +386,7 @@
       <input type="text" id="exclude-input" aria-label="除外するドメイン" spellcheck="false" placeholder="example.com">
       <button class="btn-primary" id="exclude-add-btn">追加</button>
     </div>
+    <p class="exclude-status" id="exclude-status" aria-live="polite" hidden></p>
     <ul id="exclude-list" class="exclude-list" aria-label="除外リスト" hidden aria-busy="true"></ul>
     <p class="exclude-empty" id="exclude-empty" hidden>登録されているドメインはありません</p>
   </section>

@@ -5,6 +5,18 @@
 形式は [Keep a Changelog](https://keepachangelog.com/ja/1.1.0/) に準拠し、
 バージョン管理は [Semantic Versioning](https://semver.org/lang/ja/) に従います。
 
+## [2.0.0] - 2026-06-21
+
+### 追加
+
+- 置換対象フォントを設定画面で選択できるようになった。「すべてのフォント」または「個別に選択」から選べる
+- 個別選択時の組み込みグループ：system-ui /Yu Gothic UI / Meiryo UI、Yu Gothic、MS PGothic /ＭＳ Ｐゴシック、Meiryo /メイリオ
+- 個別選択時に任意のフォント名を追加し、置換対象に加えることができるようになった
+
+### 変更
+
+- popupおよびoptions画面のアクセシビリティを全面的に改善。全テキストを16px以上に統一し、コントラスト比・フォーカス表示・WAI-ARIAの適用をWCAG 2.2 AAに準拠させた
+
 ## [1.3.0] - 2026-06-08
 
 ### 追加
