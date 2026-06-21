@@ -131,6 +131,107 @@
       margin-bottom: 32px;
     }
 
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* 置換対象フォント */
+
+    fieldset {
+      border: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .replace-mode {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .mode-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .group-items {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .group-item {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .group-item input[type="checkbox"] {
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    .group-item-text {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .group-label {
+      font-size: 13px;
+      font-family: monospace;
+      cursor: pointer;
+    }
+
+    .group-desc {
+      font-size: 12px;
+      color: var(--color-secondary);
+      line-height: 1.5;
+    }
+
+    /* カスタムフォントリスト */
+
+    .custom-font-list {
+      list-style: none;
+      margin-bottom: 12px;
+    }
+
+    .custom-font-item {
+      display: flex;
+      align-items: center;
+      padding: 6px 0;
+      border-bottom: 1px solid GrayText;
+      font-size: 13px;
+      font-family: monospace;
+    }
+
+    .custom-font-item:last-child {
+      border-bottom: none;
+    }
+
+    .custom-font-item-label {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    /* 除外リスト */
+
     .exclude-list {
       list-style: none;
       margin-top: 12px;
@@ -144,7 +245,6 @@
       border-bottom: 1px solid GrayText;
       font-size: 13px;
       font-family: monospace;
-      opacity: 0.8;
     }
 
     .exclude-item:last-child {
@@ -183,9 +283,66 @@
   <h1>FIDIM 設定</h1>
 
   <section>
+    <h2>置換対象フォント</h2>
+    <fieldset class="replace-mode">
+      <legend class="visually-hidden">置換モード</legend>
+      <label class="mode-label">
+        <input type="radio" name="replace-mode" value="all">
+        すべてのフォント
+      </label>
+      <label class="mode-label">
+        <input type="radio" name="replace-mode" value="selective" checked>
+        個別に選択
+      </label>
+    </fieldset>
+
+    <div id="selective-options">
+      <div class="group-items">
+        <div class="group-item">
+          <input type="checkbox" id="group-system-ui" checked>
+          <div class="group-item-text">
+            <label for="group-system-ui" class="group-label">system-ui, Yu Gothic UI, Meiryo UI</label>
+            <p class="group-desc">Windowsでは本文にsystem-uiが適用されると過酷な閲覧体験となってしまう</p>
+          </div>
+        </div>
+        <div class="group-item">
+          <input type="checkbox" id="group-yu-gothic" checked>
+          <div class="group-item-text">
+            <label for="group-yu-gothic" class="group-label">Yu Gothic</label>
+            <p class="group-desc">WindowsではYu Gothicは細くて読みにくい</p>
+          </div>
+        </div>
+        <div class="group-item">
+          <input type="checkbox" id="group-ms-pgothic" checked>
+          <div class="group-item-text">
+            <label for="group-ms-pgothic" class="group-label">MS PGothic, ＭＳ Ｐゴシック</label>
+            <p class="group-desc">小さいまたは標準的なフォントサイズでは読みやすさに欠ける</p>
+          </div>
+        </div>
+        <div class="group-item">
+          <input type="checkbox" id="group-meiryo" checked>
+          <div class="group-item-text">
+            <label for="group-meiryo" class="group-label">Meiryo, メイリオ</label>
+            <p class="group-desc">大きいフォントサイズの時に読みやすさに欠ける</p>
+          </div>
+        </div>
+      </div>
+
+      <ul id="custom-font-list" class="custom-font-list" aria-label="追加したフォント" hidden aria-busy="true"></ul>
+
+      <div class="input-row">
+        <input type="text" id="custom-font-input" aria-label="追加するフォント名" spellcheck="false" placeholder="フォント名を入力（例：Osaka）">
+        <button class="btn-primary" id="custom-font-add-btn">追加</button>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <section>
     <h2>置き換えフォント</h2>
     <p class="field-description">
-      読みにくいUIフォント（Yu Gothic UI、Meiryo UI）を置き換えるfont-familyの値を指定します。<br>
+      置換対象として選択したフォントを置き換えるfont-familyの値を指定します。<br>
       デフォルト: <code>sans-serif</code><br>
       複数のフォントを指定する場合はCSSと同じ書き方で： <code>'Noto Sans JP', sans-serif</code>
     </p>

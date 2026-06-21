@@ -37,10 +37,12 @@ https://chromewebstore.google.com/detail/fidim/bhnahaneodkjfpcofjdhogmhhbaodmcn
 
 ## 更新履歴
 
-### [1.3.0] - 2026-06-08
+### [2.0.0] - 2026-06-21
 
 #### 追加
 
-- Yu Gothicも、macOSではイイ感じの太さで表示されるがWindowsでは細くて読みにくい。つまりこれを優先して指定するということは、macOSでしか表示確認してない可能性が高く、FIDIM置換の対象として追加
+- 置換対象フォントを設定画面で選択できるようになった。「すべてのフォント」または「個別に選択」から選べる
+- 個別選択時の組み込みグループ：system-ui / Yu Gothic UI / Meiryo UI、Yu Gothic、MS PGothic / ＭＳ Ｐゴシック、Meiryo / メイリオ
+- 個別選択時に任意のフォント名を追加し、置換対象に加えることができるようになった
 
 全履歴は [CHANGELOG.md](CHANGELOG.md) を参照。
