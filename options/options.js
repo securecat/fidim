@@ -192,6 +192,7 @@ const excludeInput = document.getElementById('exclude-input');
 const excludeAddBtn = document.getElementById('exclude-add-btn');
 const excludeList = document.getElementById('exclude-list');
 const excludeEmpty = document.getElementById('exclude-empty');
+const excludeStatus = document.getElementById('exclude-status');
 
 chrome.storage.sync.get({ [STORAGE_KEY_EXCLUDED]: [] }, (result) => {
   renderExcludeList(result[STORAGE_KEY_EXCLUDED]);
@@ -205,6 +206,21 @@ excludeInput.addEventListener('keydown', (e) => {
   if (e.key === 'Enter') addExcludeHost();
 });
 
+excludeInput.addEventListener('input', () => {
+  showExcludeStatus('', '');
+});
+
+function isValidHostname(hostname) {
+  if (!hostname || hostname.length > 253) return false;
+  return /^[a-zA-Z0-9][a-zA-Z0-9.\-]*[a-zA-Z0-9]$|^[a-zA-Z0-9]$/.test(hostname)
+    && !hostname.includes('..');
+}
+
+function showExcludeStatus(message, type) {
+  excludeStatus.textContent = message;
+  excludeStatus.className = type ? `exclude-status ${type}` : 'exclude-status';
+}
+
 function addExcludeHost() {
   const raw = excludeInput.value.trim();
   if (!raw) return;
@@ -216,6 +232,11 @@ function addExcludeHost() {
     host = raw;
   }
 
+  if (!isValidHostname(host)) {
+    showExcludeStatus('有効なドメイン名を入力してください（例：example.com）', 'error');
+    return;
+  }
+
   chrome.storage.sync.get({ [STORAGE_KEY_EXCLUDED]: [] }, (result) => {
     const excluded = result[STORAGE_KEY_EXCLUDED];
     if (excluded.includes(host)) {
@@ -225,6 +246,7 @@ function addExcludeHost() {
     const newExcluded = [...excluded, host];
     chrome.storage.sync.set({ [STORAGE_KEY_EXCLUDED]: newExcluded }, () => {
       excludeInput.value = '';
+      showExcludeStatus('', '');
       renderExcludeList(newExcluded);
     });
   });

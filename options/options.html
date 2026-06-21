@@ -10,6 +10,7 @@
       --color-secondary: #262626;
       --color-desc: #767676;
       --color-success: #1a7a1a;
+      --color-error: #c00000;
     }
 
     @media (prefers-color-scheme: dark) {
@@ -17,6 +18,7 @@
         --color-secondary: #c8c8c8;
         --color-desc: #a0a0a0;
         --color-success: #4caf50;
+        --color-error: #ff6b6b;
       }
     }
 
@@ -281,6 +283,15 @@
       margin-top: 12px;
     }
 
+    .exclude-status {
+      margin-top: 8px;
+      min-height: 1.4em;
+    }
+
+    .exclude-status.error {
+      color: var(--color-error);
+    }
+
     .custom-font-item .btn-reset,
     .exclude-item .btn-reset {
       padding: 2px 8px;
@@ -376,6 +387,7 @@
       <input type="text" id="exclude-input" aria-label="除外するドメイン" spellcheck="false" placeholder="example.com">
       <button class="btn-primary" id="exclude-add-btn">追加</button>
     </div>
+    <p class="exclude-status" id="exclude-status" aria-live="polite"></p>
     <ul id="exclude-list" class="exclude-list" aria-label="除外リスト" hidden aria-busy="true"></ul>
     <p class="exclude-empty" id="exclude-empty" hidden>登録されているドメインはありません</p>
   </section>
