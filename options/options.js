@@ -73,16 +73,30 @@ customFontInput.addEventListener('keydown', (e) => {
   if (e.key === 'Enter') addCustomFont();
 });
 
+function parseFontNames(raw) {
+  return raw
+    .split(',')
+    .map(s => s.trim().replace(/^['"]|['"]$/g, '').trim())
+    .filter(Boolean);
+}
+
 function addCustomFont() {
-  const name = customFontInput.value.trim();
-  if (!name) return;
+  const names = parseFontNames(customFontInput.value);
+  if (names.length === 0) return;
   chrome.storage.sync.get({ [STORAGE_KEY_CUSTOM_FONTS]: [] }, (result) => {
     const fonts = result[STORAGE_KEY_CUSTOM_FONTS];
-    if (fonts.some(f => f.name === name)) {
+    const existingNames = new Set(fonts.map(f => f.name));
+    const newEntries = [];
+    for (const name of names) {
+      if (existingNames.has(name)) continue;
+      existingNames.add(name);
+      newEntries.push(name);
+    }
+    if (newEntries.length === 0) {
       customFontInput.value = '';
       return;
     }
-    const newFonts = [...fonts, { name, enabled: true }];
+    const newFonts = [...fonts, ...newEntries.map(name => ({ name, enabled: true }))];
     chrome.storage.sync.set({ [STORAGE_KEY_CUSTOM_FONTS]: newFonts }, () => {
       customFontInput.value = '';
       renderCustomFontList(newFonts);

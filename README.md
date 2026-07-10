@@ -38,10 +38,10 @@ https://chromewebstore.google.com/detail/fidim/bhnahaneodkjfpcofjdhogmhhbaodmcn
 
 ## 更新履歴
 
-### [2.0.1] - 2026-07-10
+### [2.0.2] - 2026-07-10
 
 #### 修正
 
-- 組み込みグループ「system-ui」「Yu Gothic」に、Yu Gothic UI・Yu Gothicの日本語表記（游ゴシック UI、游ゴシック）が含まれておらず、これらの表記で指定されたフォントが置換対象をすり抜けていた問題を修正
+- 置換対象フォントの追加欄に `'Yu Mincho','游明朝','YuMincho'` のようにカンマ区切りで複数指定すると、1つの文字列としてまとめて登録されてしまい、いずれの表記でも置換が効かなかった問題を修正。カンマ区切りで一括指定できるようになった
 
 全履歴は [CHANGELOG.md](CHANGELOG.md) を参照。
