@@ -5,6 +5,12 @@
 形式は [Keep a Changelog](https://keepachangelog.com/ja/1.1.0/) に準拠し、
 バージョン管理は [Semantic Versioning](https://semver.org/lang/ja/) に従います。
 
+## [2.0.1] - 2026-07-10
+
+### 修正
+
+- 組み込みグループ「system-ui」「Yu Gothic」に、Yu Gothic UI・Yu Gothicの日本語表記（游ゴシック UI、游ゴシック）が含まれておらず、これらの表記で指定されたフォントが置換対象をすり抜けていた問題を修正
+
 ## [2.0.0] - 2026-06-21
 
 ### 追加

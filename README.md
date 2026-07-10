@@ -38,16 +38,10 @@ https://chromewebstore.google.com/detail/fidim/bhnahaneodkjfpcofjdhogmhhbaodmcn
 
 ## 更新履歴
 
-### [2.0.0] - 2026-06-21
+### [2.0.1] - 2026-07-10
 
-#### 追加
+#### 修正
 
-- 置換対象フォントを設定画面で選択できるようになった。「すべてのフォント」または「個別に選択」から選べる
-- 個別選択時の組み込みグループ：system-ui / Yu Gothic UI / Meiryo UI、Yu Gothic、MS PGothic / ＭＳ Ｐゴシック、Meiryo / メイリオ
-- 個別選択時に任意のフォント名を追加し、置換対象に加えることができるようになった
-
-#### 変更
-
-- popupおよびoptions画面のアクセシビリティを全面的に改善。全テキストを16px以上に統一し、コントラスト比・フォーカス表示・WAI-ARIAの適用をWCAG 2.2 AAに準拠させた
+- 組み込みグループ「system-ui」「Yu Gothic」に、Yu Gothic UI・Yu Gothicの日本語表記（游ゴシック UI、游ゴシック）が含まれておらず、これらの表記で指定されたフォントが置換対象をすり抜けていた問題を修正
 
 全履歴は [CHANGELOG.md](CHANGELOG.md) を参照。

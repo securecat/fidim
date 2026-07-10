@@ -15,8 +15,8 @@
   };
 
   const BUILTIN_GROUP_FONTS = {
-    'system-ui': ['Yu Gothic UI', 'Meiryo UI', 'system-ui', '-apple-system', 'BlinkMacSystemFont'],
-    'yu-gothic': ['Yu Gothic'],
+    'system-ui': ['Yu Gothic UI', '游ゴシック UI', 'Meiryo UI', 'system-ui', '-apple-system', 'BlinkMacSystemFont'],
+    'yu-gothic': ['Yu Gothic', '游ゴシック'],
     'ms-pgothic': ['MS PGothic', 'ＭＳ Ｐゴシック'],
     'meiryo': ['Meiryo', 'メイリオ'],
   };
