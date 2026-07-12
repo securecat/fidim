@@ -38,10 +38,10 @@ https://chromewebstore.google.com/detail/fidim/bhnahaneodkjfpcofjdhogmhhbaodmcn
 
 ## 更新履歴
 
-### [2.0.2] - 2026-07-10
+### [2.0.3] - 2026-07-10
 
-#### 修正
+#### 変更
 
-- 置換対象フォントの追加欄に `'Yu Mincho','游明朝','YuMincho'` のようにカンマ区切りで複数指定すると、1つの文字列としてまとめて登録されてしまい、いずれの表記でも置換が効かなかった問題を修正。カンマ区切りで一括指定できるようになった
+- `manifest.json` の `description` を英語から日本語に変更。日本向けの拡張機能であることがChrome ウェブストアの検索結果でも伝わるようにした
 
 全履歴は [CHANGELOG.md](CHANGELOG.md) を参照。

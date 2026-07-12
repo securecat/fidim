@@ -5,6 +5,12 @@
 形式は [Keep a Changelog](https://keepachangelog.com/ja/1.1.0/) に準拠し、
 バージョン管理は [Semantic Versioning](https://semver.org/lang/ja/) に従います。
 
+## [2.0.3] - 2026-07-10
+
+### 変更
+
+- `manifest.json` の `description` を英語から日本語に変更。日本向けの拡張機能であることがChrome ウェブストアの検索結果でも伝わるようにした
+
 ## [2.0.2] - 2026-07-10
 
 ### 修正
