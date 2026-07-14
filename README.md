@@ -38,10 +38,15 @@ https://chromewebstore.google.com/detail/fidim/bhnahaneodkjfpcofjdhogmhhbaodmcn
 
 ## 更新履歴
 
-### [2.0.3] - 2026-07-10
+### [2.0.4] - 2026-07-10
+
+#### 追加
+
+- 設定画面の除外リストセクションの下に、GitHub Issuesへのバグ報告動線を追加
 
 #### 変更
 
-- `manifest.json` の `description` を英語から日本語に変更。日本向けの拡張機能であることがChrome ウェブストアの検索結果でも伝わるようにした
+- 削除・リセットボタンのコントラスト比を改善。ボーダーをライト`#000000`／ダーク`#FFFFFF`に、hover時の背景色をライト`#949494`／ダーク`#4D4D4D`にして視認性を高めた
+- 追加ボタンの背景色をライトモードで`#0066CC`に変更（ダークモードは変更なし）
 
 全履歴は [CHANGELOG.md](CHANGELOG.md) を参照。
