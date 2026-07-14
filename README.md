@@ -38,7 +38,7 @@ https://chromewebstore.google.com/detail/fidim/bhnahaneodkjfpcofjdhogmhhbaodmcn
 
 ## 更新履歴
 
-### [2.0.4] - 2026-07-10
+### [2.0.4] - 2026-07-15
 
 #### 追加
 
