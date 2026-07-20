@@ -7,6 +7,7 @@
   const STORAGE_KEY_CUSTOM_FONTS = 'fidim_custom_fonts';
 
   const DEFAULT_FONT = 'sans-serif';
+  const MIN_FONT_WEIGHT = 400;
   const DEFAULT_BUILTIN_GROUPS = {
     'system-ui': true,
     'yu-gothic': true,
@@ -71,17 +72,28 @@
     document.head.appendChild(style);
   }
 
-  function shouldReplace(el) {
+  function shouldReplaceFont(computedFontFamily) {
     if (replaceMode === 'all') return true;
     if (targetFonts.length === 0) return false;
-    const computed = getComputedStyle(el).fontFamily.toLowerCase();
-    return targetFonts.some(f => computed.includes(f.toLowerCase()));
+    const family = computedFontFamily.toLowerCase();
+    return targetFonts.some(f => family.includes(f.toLowerCase()));
+  }
+
+  // ヒラギノ角ゴなど一部のフォントを前提に本文へ細いウェイトを指定しているサイトでは、
+  // 代替フォントで表示された途端に読めなくなるため、normalより細い指定は打ち消す
+  function shouldNormalizeWeight(computedFontWeight) {
+    const weight = parseFloat(computedFontWeight);
+    return Number.isFinite(weight) && weight < MIN_FONT_WEIGHT;
   }
 
   function processElement(el) {
     if (el.nodeType !== Node.ELEMENT_NODE) return;
-    if (shouldReplace(el)) {
+    const computed = getComputedStyle(el);
+    if (shouldReplaceFont(computed.fontFamily)) {
       el.style.setProperty('font-family', replacementFont, 'important');
+    }
+    if (shouldNormalizeWeight(computed.fontWeight)) {
+      el.style.setProperty('font-weight', 'normal', 'important');
     }
   }
 
