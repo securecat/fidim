@@ -5,6 +5,12 @@
 形式は [Keep a Changelog](https://keepachangelog.com/ja/1.1.0/) に準拠し、
 バージョン管理は [Semantic Versioning](https://semver.org/lang/ja/) に従います。
 
+## [2.2.0] - 2026-08-07
+
+### 追加
+
+- 「個別に選択」のプリセットに `'Yu Mincho', '游明朝', 'YuMincho'` を追加。明朝体は長い本文では視認が厳しい場合が多く、なかでもWindowsのYu Minchoは細くて読みにくいため。ただし明朝体からゴシック体への置換を好まない人もいることを踏まえ、デフォルトは未チェック（置換しない）とした
+
 ## [2.1.0] - 2026-07-20
 
 ### 追加

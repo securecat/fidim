@@ -9,8 +9,9 @@ const DEFAULT_BUILTIN_GROUPS = {
   'yu-gothic': true,
   'ms-pgothic': true,
   'meiryo': true,
+  'yu-mincho': false,
 };
-const BUILTIN_GROUP_IDS = ['system-ui', 'yu-gothic', 'ms-pgothic', 'meiryo'];
+const BUILTIN_GROUP_IDS = ['system-ui', 'yu-gothic', 'ms-pgothic', 'meiryo', 'yu-mincho'];
 
 // --- 置換対象フォント ---
 

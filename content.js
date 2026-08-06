@@ -13,6 +13,7 @@
     'yu-gothic': true,
     'ms-pgothic': true,
     'meiryo': true,
+    'yu-mincho': false,
   };
 
   const BUILTIN_GROUP_FONTS = {
@@ -20,6 +21,7 @@
     'yu-gothic': ['Yu Gothic', '游ゴシック'],
     'ms-pgothic': ['MS PGothic', 'ＭＳ Ｐゴシック'],
     'meiryo': ['Meiryo', 'メイリオ'],
+    'yu-mincho': ['Yu Mincho', '游明朝', 'YuMincho'],
   };
 
   let enabled = true;
