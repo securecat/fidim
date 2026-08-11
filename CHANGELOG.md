@@ -5,6 +5,13 @@
 形式は [Keep a Changelog](https://keepachangelog.com/ja/1.1.0/) に準拠し、
 バージョン管理は [Semantic Versioning](https://semver.org/lang/ja/) に従います。
 
+## [2.2.1] - 2026-08-11
+
+### 修正
+
+- iframe内のコンテンツでフォント置換が効かなかった問題を修正。`content_scripts` に `all_frames: true` を追加し、すべてのフレームで置換が動作するようにした
+- あわせて、無効化トグル時にトップフレームのみが再読み込みを行うようにし、iframeを含むページでの多重リロードを防いだ
+
 ## [2.2.0] - 2026-08-07
 
 ### 追加

@@ -122,7 +122,9 @@
       if (enabled) {
         processAll();
         observe();
-      } else {
+      } else if (window.top === window) {
+        // トップフレームのreloadで配下のiframeもまとめて再構築されるため、
+        // iframe側は個別にreloadしない（多重リロードを防ぐ）
         location.reload();
       }
     }

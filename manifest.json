@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "FIDIM",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "読みにくいWindowsフォントを、読みやすい代替フォントに自動で置き換えるChrome拡張機能。置換対象フォントは自由に選択・追加できます。",
   "permissions": [
     "storage",
@@ -13,6 +13,7 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
+      "all_frames": true,
       "js": ["content.js"],
       "run_at": "document_start"
     }
