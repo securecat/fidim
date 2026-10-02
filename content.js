@@ -28,11 +28,9 @@
   // 実際に表示されるフォントを判定するときは読み飛ばして後続のフォントを見る
   const FONT_FACE_ALIASES = ['Anthropic Sans'];
 
-  // 総称ファミリー（引用符なしで書かれたもの）は、必ずブラウザ既定の何らかのフォントに解決される
-  const GENERIC_FAMILIES = [
-    'serif', 'sans-serif', 'monospace', 'cursive', 'fantasy', 'math', 'emoji', 'fangsong',
-    'system-ui', 'ui-serif', 'ui-sans-serif', 'ui-monospace', 'ui-rounded',
-  ];
+  // 総称ファミリー（引用符なしで書かれたもの）は、必ずブラウザ既定の何らかのフォントに解決される。
+  // ui-sans-serif などChromeが対応していない（読み飛ばす）ものは含めず、描画比較で判定する
+  const GENERIC_FAMILIES = ['serif', 'sans-serif', 'monospace', 'cursive', 'fantasy', 'system-ui'];
 
   // 日本語の本文がどのフォントで表示されるかを判定するための見本文字
   const PROBE_TEXT = 'あ永';
@@ -48,8 +46,10 @@
   let probeContext = null;
   const installedFontCache = new Map();
   const replaceDecisionCache = new Map();
-  let fontFaceCoverage = new Map();
+  let fontFaceStates = new Map();
   let fontFaceCount = -1;
+  let watchingFontLoading = false;
+  let reprocessTimer = null;
 
   chrome.storage.sync.get(
     {
@@ -81,6 +81,7 @@
         injectFontFaceOverrides();
         processAll();
         observe();
+        watchFontLoading();
       }
     }
   );
@@ -140,21 +141,52 @@
     });
   }
 
-  // ページが @font-face で定義したフォントは、読み込み前でも最終的にはそれで表示されるため、
-  // 日本語の字形を含むかどうかを unicode-range から判断する
-  function getFontFaceCoverage() {
+  // ページが @font-face で定義したフォントの状態を、ファミリー名ごとにまとめる。
+  //   'skip'    … 日本語を含む定義が無い、またはすべて読み込みに失敗した
+  //   'loaded'  … 読み込み済みなので、描画比較で実際に日本語の字形を持つか確かめられる
+  //   'pending' … 読み込み前。最終的にはそれで表示される見込みとして扱う
+  // unicode-range を省略した定義（local("Arial") だけのフォールバック用など）は全範囲扱いになるため、
+  // 読み込み後に描画比較で確かめ直す（watchFontLoading() を参照）
+  function getFontFaceStates() {
     if (document.fonts.size !== fontFaceCount) {
       fontFaceCount = document.fonts.size;
-      fontFaceCoverage = new Map();
+      fontFaceStates = new Map();
       document.fonts.forEach((face) => {
-        if (face.status === 'error') return;
         const name = normalizeFamilyName(face.family);
-        const covers = coversCodePoint(face.unicodeRange, PROBE_CODE_POINT);
-        fontFaceCoverage.set(name, fontFaceCoverage.get(name) || covers);
+        let state = 'skip';
+        if (coversCodePoint(face.unicodeRange, PROBE_CODE_POINT) && face.status !== 'error') {
+          state = face.status === 'loaded' ? 'loaded' : 'pending';
+        }
+        const current = fontFaceStates.get(name);
+        if (!current || current === 'skip' || state === 'loaded') {
+          fontFaceStates.set(name, state);
+        }
       });
       replaceDecisionCache.clear();
     }
-    return fontFaceCoverage;
+    return fontFaceStates;
+  }
+
+  function clearFontCaches() {
+    fontFaceCount = -1;
+    installedFontCache.clear();
+    replaceDecisionCache.clear();
+  }
+
+  // Webフォントの読み込みが終わる（または失敗する）と、実際に表示されるフォントが変わりうるので判定し直す
+  function watchFontLoading() {
+    if (watchingFontLoading) return;
+    watchingFontLoading = true;
+    const reprocess = () => {
+      clearTimeout(reprocessTimer);
+      reprocessTimer = setTimeout(() => {
+        if (!enabled) return;
+        clearFontCaches();
+        processAll();
+      }, 100);
+    };
+    document.fonts.addEventListener('loadingdone', reprocess);
+    document.fonts.addEventListener('loadingerror', reprocess);
   }
 
   function renderProbe(fontFamily) {
@@ -187,15 +219,15 @@
   // font-family のうち、日本語の本文が実際に表示されるフォントを先頭から探し、それが置換対象かを返す
   function resolveReplaceDecision(computedFontFamily) {
     const aliases = FONT_FACE_ALIASES.map(normalizeFamilyName);
-    const fontFaces = getFontFaceCoverage();
+    const fontFaces = getFontFaceStates();
     for (const family of parseFontFamilyList(computedFontFamily)) {
       if (!family.quoted && GENERIC_FAMILIES.includes(family.name)) {
         return targetFonts.includes(family.name);
       }
       if (aliases.includes(family.name)) continue;
-      const rendered = fontFaces.has(family.name)
-        ? fontFaces.get(family.name)
-        : isInstalledWithJapanese(family);
+      const fontFaceState = fontFaces.get(family.name);
+      if (fontFaceState === 'skip') continue;
+      const rendered = fontFaceState === 'pending' || isInstalledWithJapanese(family);
       if (rendered) return targetFonts.includes(family.name);
     }
     return false;
@@ -204,7 +236,7 @@
   function shouldReplaceFont(computedFontFamily) {
     if (replaceMode === 'all') return true;
     if (targetFonts.length === 0) return false;
-    getFontFaceCoverage();
+    getFontFaceStates();
     if (!replaceDecisionCache.has(computedFontFamily)) {
       replaceDecisionCache.set(computedFontFamily, resolveReplaceDecision(computedFontFamily));
     }
@@ -252,6 +284,7 @@
       if (enabled) {
         processAll();
         observe();
+        watchFontLoading();
       } else if (window.top === window) {
         // トップフレームのreloadで配下のiframeもまとめて再構築されるため、
         // iframe側は個別にreloadしない（多重リロードを防ぐ）
