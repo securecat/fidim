@@ -39,7 +39,7 @@
       'Yu Mincho Demibold', '游明朝 Demibold',
       'Yu Mincho Light', '游明朝 Light',
       'YuMincho', '游明朝体',
-      'YuMincho +36p Kana', '游明朝体+36ポかな',
+      'YuMincho +36p Kana', '游明朝体+36ポかな', 'YuMin_36pKn-Medium',
       'yu-mincho-pr6n', 'yu-mincho-36p-kana',
     ],
   };
