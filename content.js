@@ -17,7 +17,7 @@
   };
 
   // 組み込みグループは完全一致で判定するため、ウェイト違いなどで別のファミリー名になっているもの
-  // （WindowsのYu Gothic Mediumや、macOSの游ゴシック体など）も漏れなく列挙しておく
+  // （WindowsのYu Gothic Mediumや、macOSの游ゴシック体、Adobe Fontsのyu-gothic-pr6nなど）も漏れなく列挙しておく
   const BUILTIN_GROUP_FONTS = {
     'system-ui': [
       'Yu Gothic UI', '游ゴシック UI',
@@ -30,6 +30,7 @@
       'Yu Gothic Medium', '游ゴシック Medium',
       'Yu Gothic Light', '游ゴシック Light',
       'YuGothic', '游ゴシック体',
+      'yu-gothic-pr6n',
     ],
     'ms-pgothic': ['MS PGothic', 'ＭＳ Ｐゴシック'],
     'meiryo': ['Meiryo', 'メイリオ'],
@@ -39,6 +40,7 @@
       'Yu Mincho Light', '游明朝 Light',
       'YuMincho', '游明朝体',
       'YuMincho +36p Kana', '游明朝体+36ポかな',
+      'yu-mincho-pr6n', 'yu-mincho-36p-kana',
     ],
   };
 
@@ -52,8 +54,11 @@
 
   // 日本語の本文がどのフォントで表示されるかを判定するための見本文字
   const PROBE_TEXT = 'あ永';
-  const PROBE_CODE_POINT = PROBE_TEXT.codePointAt(0);
   const PROBE_FONT_SIZE = 32;
+
+  // @font-face の unicode-range がこれらと重なれば、日本語の字形を含むとみなす（かな・CJK統合漢字）
+  const JAPANESE_RANGES = [[0x3040, 0x30FF], [0x4E00, 0x9FFF]];
+  const FULL_RANGE_END = 0x10FFFF;
   const PROBE_FALLBACKS = ['serif', 'sans-serif', 'monospace'];
 
   let enabled = true;
@@ -150,35 +155,48 @@
       }));
   }
 
-  function coversCodePoint(unicodeRange, codePoint) {
-    return unicodeRange.split(',').some((part) => {
+  function parseUnicodeRange(unicodeRange) {
+    return unicodeRange.split(',').flatMap((part) => {
       const match = part.trim().match(/^U\+([0-9A-F?]+)(?:-([0-9A-F]+))?$/i);
-      if (!match) return false;
+      if (!match) return [];
       const [, start, end] = match;
       const low = parseInt(start.replace(/\?/g, '0'), 16);
       const high = end ? parseInt(end, 16) : parseInt(start.replace(/\?/g, 'F'), 16);
-      return low <= codePoint && codePoint <= high;
+      return [[low, high]];
     });
   }
 
+  // 優先度の高い順。同じファミリー名に複数の定義があるときは、最も優先度の高い状態を採用する
+  //   'japanese' … unicode-range が日本語の範囲と重なる。読み込み前でも最終的にはそれで表示される
+  //   'probe'    … unicode-range を省略した（全範囲の）定義で、読み込み済み。描画比較で確かめる
+  //   'pending'  … unicode-range を省略した定義で、読み込み前。それで表示される見込みとして扱う
+  //   'skip'     … 日本語を含む定義が無い、またはすべて読み込みに失敗した
+  const FONT_FACE_STATE_PRIORITY = ['japanese', 'probe', 'pending', 'skip'];
+
+  function getFontFaceState(face) {
+    if (face.status === 'error') return 'skip';
+    const ranges = parseUnicodeRange(face.unicodeRange);
+    // local("Arial") だけのフォールバック用定義などは全範囲扱いになり、範囲からは判断できない
+    if (ranges.some(([low, high]) => low === 0 && high >= FULL_RANGE_END)) {
+      return face.status === 'loaded' ? 'probe' : 'pending';
+    }
+    // Adobe Fontsのように、ページで使う文字だけを列挙した定義もあるため、範囲の重なりで判断する
+    const overlapsJapanese = ranges.some(([low, high]) =>
+      JAPANESE_RANGES.some(([jaLow, jaHigh]) => low <= jaHigh && jaLow <= high));
+    return overlapsJapanese ? 'japanese' : 'skip';
+  }
+
   // ページが @font-face で定義したフォントの状態を、ファミリー名ごとにまとめる。
-  //   'skip'    … 日本語を含む定義が無い、またはすべて読み込みに失敗した
-  //   'loaded'  … 読み込み済みなので、描画比較で実際に日本語の字形を持つか確かめられる
-  //   'pending' … 読み込み前。最終的にはそれで表示される見込みとして扱う
-  // unicode-range を省略した定義（local("Arial") だけのフォールバック用など）は全範囲扱いになるため、
-  // 読み込み後に描画比較で確かめ直す（watchFontLoading() を参照）
+  // 全範囲の定義は読み込み後に描画比較で確かめ直す（watchFontLoading() を参照）
   function getFontFaceStates() {
     if (document.fonts.size !== fontFaceCount) {
       fontFaceCount = document.fonts.size;
       fontFaceStates = new Map();
       document.fonts.forEach((face) => {
         const name = normalizeFamilyName(face.family);
-        let state = 'skip';
-        if (coversCodePoint(face.unicodeRange, PROBE_CODE_POINT) && face.status !== 'error') {
-          state = face.status === 'loaded' ? 'loaded' : 'pending';
-        }
+        const state = getFontFaceState(face);
         const current = fontFaceStates.get(name);
-        if (!current || current === 'skip' || state === 'loaded') {
+        if (!current || FONT_FACE_STATE_PRIORITY.indexOf(state) < FONT_FACE_STATE_PRIORITY.indexOf(current)) {
           fontFaceStates.set(name, state);
         }
       });
@@ -252,7 +270,8 @@
       if (aliases.includes(family.name)) continue;
       const fontFaceState = fontFaces.get(family.name);
       if (fontFaceState === 'skip') continue;
-      const rendered = fontFaceState === 'pending' || isInstalledWithJapanese(family);
+      const rendered = fontFaceState === 'japanese' || fontFaceState === 'pending'
+        || isInstalledWithJapanese(family);
       if (rendered) return isTargetFont(family.name);
     }
     return false;
