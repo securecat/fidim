@@ -5,6 +5,22 @@
 形式は [Keep a Changelog](https://keepachangelog.com/ja/1.1.0/) に準拠し、
 バージョン管理は [Semantic Versioning](https://semver.org/lang/ja/) に従います。
 
+## [2.3.0] - 2026-10-03
+
+### 追加
+
+- 「個別に選択」のプリセットに、ウェイト違いなどで別のファミリー名になっている派生名を追加。完全一致で判定するようにしたことにあわせ、漏れなく置換対象になるようにした
+  - system-ui：`Yu Gothic UI Semibold` / `Semilight` / `Light`
+  - 游ゴシック：`Yu Gothic Medium`・`游ゴシック Medium`、`Yu Gothic Light`・`游ゴシック Light`、`YuGothic`・`游ゴシック体`、`YuGo-Medium`・`YuGo-Bold`、Adobe Fontsの `yu-gothic-pr6n`
+  - 游明朝：`Yu Mincho Demibold`・`游明朝 Demibold`、`Yu Mincho Light`・`游明朝 Light`、`游明朝体`、`YuMin-Medium` / `Demibold` / `Extrabold`、`YuMincho +36p Kana`・`游明朝体+36ポかな`・`YuMin_36pKn-Medium` / `Demibold` / `Extrabold`、Adobe Fontsの `yu-mincho-pr6n`・`yu-mincho-36p-kana`
+- 設定画面のプリセット名に、置換対象となるフォント名をすべて記載するようにした
+
+### 変更
+
+- 置換するかどうかを、`font-family` に置換対象のフォント名が含まれているかではなく、日本語の本文が実際に表示されるフォントで判定するようにした。`font-family` を先頭から順に見て、インストールされていない・日本語の字形を持たないフォントは読み飛ばし、最初に表示に使われるフォントが置換対象かどうかで決める。これにより、`BIZ UDPGothic` など読みやすいフォントが先頭にあるのにフォールバックに `Meiryo` があるだけで置換される、ということがなくなった
+- Webフォント（`@font-face`）は `unicode-range` が日本語の範囲を含むかで判断し、読み込みの完了・失敗時に判定をやり直すようにした
+- プリセットのフォント名は完全一致で判定するようにした。これまでは部分一致のため、たとえば「メイリオ」のプリセットだけを有効にしていても `Meiryo UI` まで置換されていた。追加したフォントは引き続き部分一致で判定する
+
 ## [2.2.1] - 2026-08-11
 
 ### 修正
