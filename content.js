@@ -16,12 +16,30 @@
     'yu-mincho': false,
   };
 
+  // 組み込みグループは完全一致で判定するため、ウェイト違いなどで別のファミリー名になっているもの
+  // （WindowsのYu Gothic Mediumや、macOSの游ゴシック体など）も漏れなく列挙しておく
   const BUILTIN_GROUP_FONTS = {
-    'system-ui': ['Yu Gothic UI', '游ゴシック UI', 'Meiryo UI', 'system-ui', '-apple-system', 'BlinkMacSystemFont'],
-    'yu-gothic': ['Yu Gothic', '游ゴシック'],
+    'system-ui': [
+      'Yu Gothic UI', '游ゴシック UI',
+      'Yu Gothic UI Semibold', 'Yu Gothic UI Semilight', 'Yu Gothic UI Light',
+      'Meiryo UI',
+      'system-ui', '-apple-system', 'BlinkMacSystemFont',
+    ],
+    'yu-gothic': [
+      'Yu Gothic', '游ゴシック',
+      'Yu Gothic Medium', '游ゴシック Medium',
+      'Yu Gothic Light', '游ゴシック Light',
+      'YuGothic', '游ゴシック体',
+    ],
     'ms-pgothic': ['MS PGothic', 'ＭＳ Ｐゴシック'],
     'meiryo': ['Meiryo', 'メイリオ'],
-    'yu-mincho': ['Yu Mincho', '游明朝', 'YuMincho'],
+    'yu-mincho': [
+      'Yu Mincho', '游明朝',
+      'Yu Mincho Demibold', '游明朝 Demibold',
+      'Yu Mincho Light', '游明朝 Light',
+      'YuMincho', '游明朝体',
+      'YuMincho +36p Kana', '游明朝体+36ポかな',
+    ],
   };
 
   // injectFontFaceOverrides() でArialへ差し替えている名前。日本語の字形を持たないので、
@@ -42,6 +60,7 @@
   let replacementFont = DEFAULT_FONT;
   let replaceMode = 'selective';
   let targetFonts = [];
+  let customTargetFonts = [];
 
   let probeContext = null;
   const installedFontCache = new Map();
@@ -69,12 +88,13 @@
       if (replaceMode === 'selective') {
         const builtinGroups = result[STORAGE_KEY_BUILTIN_GROUPS] || DEFAULT_BUILTIN_GROUPS;
         const customFonts = result[STORAGE_KEY_CUSTOM_FONTS] || [];
-        targetFonts = [
-          ...Object.entries(builtinGroups)
-            .filter(([, on]) => on)
-            .flatMap(([id]) => BUILTIN_GROUP_FONTS[id] || []),
-          ...customFonts.filter(cf => cf.enabled).map(cf => cf.name),
-        ].map(normalizeFamilyName);
+        targetFonts = Object.entries(builtinGroups)
+          .filter(([, on]) => on)
+          .flatMap(([id]) => BUILTIN_GROUP_FONTS[id] || [])
+          .map(normalizeFamilyName);
+        customTargetFonts = customFonts
+          .filter(cf => cf.enabled)
+          .map(cf => normalizeFamilyName(cf.name));
       }
 
       if (enabled && !excluded.includes(location.hostname)) {
@@ -216,26 +236,31 @@
     return installed;
   }
 
+  // 組み込みグループは完全一致、カスタムフォントはユーザーが書いた名前を含むものすべてを対象とする
+  function isTargetFont(name) {
+    return targetFonts.includes(name) || customTargetFonts.some(custom => name.includes(custom));
+  }
+
   // font-family のうち、日本語の本文が実際に表示されるフォントを先頭から探し、それが置換対象かを返す
   function resolveReplaceDecision(computedFontFamily) {
     const aliases = FONT_FACE_ALIASES.map(normalizeFamilyName);
     const fontFaces = getFontFaceStates();
     for (const family of parseFontFamilyList(computedFontFamily)) {
       if (!family.quoted && GENERIC_FAMILIES.includes(family.name)) {
-        return targetFonts.includes(family.name);
+        return isTargetFont(family.name);
       }
       if (aliases.includes(family.name)) continue;
       const fontFaceState = fontFaces.get(family.name);
       if (fontFaceState === 'skip') continue;
       const rendered = fontFaceState === 'pending' || isInstalledWithJapanese(family);
-      if (rendered) return targetFonts.includes(family.name);
+      if (rendered) return isTargetFont(family.name);
     }
     return false;
   }
 
   function shouldReplaceFont(computedFontFamily) {
     if (replaceMode === 'all') return true;
-    if (targetFonts.length === 0) return false;
+    if (targetFonts.length === 0 && customTargetFonts.length === 0) return false;
     getFontFaceStates();
     if (!replaceDecisionCache.has(computedFontFamily)) {
       replaceDecisionCache.set(computedFontFamily, resolveReplaceDecision(computedFontFamily));
