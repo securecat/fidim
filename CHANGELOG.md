@@ -5,6 +5,14 @@
 形式は [Keep a Changelog](https://keepachangelog.com/ja/1.1.0/) に準拠し、
 バージョン管理は [Semantic Versioning](https://semver.org/lang/ja/) に従います。
 
+## [2.3.1] - 2026-10-19
+
+### 変更
+
+- 拡張機能の説明文（`manifest.json` の `description`）を、置き換える代表的なフォント名（游ゴシック・メイリオ）を含む内容に変更
+- ポップアップと設定画面のHTMLの文字コード宣言を、HTML Standardのサンプルコードにならって小文字の `<meta charset="utf-8">` に変更
+- 設定画面のGitHub Issuesへのリンクから `rel="noopener"` を削除。`target="_blank"` のリンクは、現在のブラウザでは既定で `noopener` として動作するため
+
 ## [2.3.0] - 2026-10-03
 
 ### 追加
