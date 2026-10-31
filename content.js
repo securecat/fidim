@@ -13,6 +13,7 @@
     'yu-gothic': true,
     'ms-pgothic': true,
     'meiryo': true,
+    'ms-ui-gothic': true,
     'yu-mincho': false,
   };
 
@@ -34,6 +35,7 @@
     ],
     'ms-pgothic': ['MS PGothic', 'ＭＳ Ｐゴシック'],
     'meiryo': ['Meiryo', 'メイリオ'],
+    'ms-ui-gothic': ['MS UI Gothic'],
     'yu-mincho': [
       'Yu Mincho', '游明朝',
       'Yu Mincho Demibold', '游明朝 Demibold',
@@ -92,7 +94,8 @@
       const excluded = result[STORAGE_KEY_EXCLUDED] || [];
 
       if (replaceMode === 'selective') {
-        const builtinGroups = result[STORAGE_KEY_BUILTIN_GROUPS] || DEFAULT_BUILTIN_GROUPS;
+        // 後から追加したグループは保存済みの設定に含まれないため、既定値で補う
+        const builtinGroups = { ...DEFAULT_BUILTIN_GROUPS, ...result[STORAGE_KEY_BUILTIN_GROUPS] };
         const customFonts = result[STORAGE_KEY_CUSTOM_FONTS] || [];
         targetFonts = Object.entries(builtinGroups)
           .filter(([, on]) => on)
