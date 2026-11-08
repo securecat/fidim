@@ -11,11 +11,11 @@
       --color-desc: #767676;
       --color-success: #1a7a1a;
       --color-error: #c00000;
-      --color-btn-primary-bg: #0066CC;
+      --color-btn-primary-bg: #0011BF;
       --color-input-border: GrayText;
       --color-btn-reset-border: #000000;
       --color-btn-reset-hover-bg: #949494;
-      --color-link: #0066CC;
+      --color-link: #0017c1;
     }
 
     @media (prefers-color-scheme: dark) {
@@ -111,23 +111,15 @@
       outline-offset: 2px;
     }
 
-    button:disabled {
-      cursor: not-allowed;
-    }
-
     .btn-primary {
       background: var(--color-btn-primary-bg);
       color: Canvas;
       border: none;
     }
 
-    .btn-primary:hover:not(:disabled) {
+    .btn-primary:hover {
       outline: 2px solid LinkText;
       outline-offset: 2px;
-    }
-
-    .btn-primary:disabled {
-      background: GrayText;
     }
 
     .btn-reset {
@@ -136,12 +128,8 @@
       border: 1px solid var(--color-btn-reset-border);
     }
 
-    .btn-reset:hover:not(:disabled) {
+    .btn-reset:hover {
       background: var(--color-btn-reset-hover-bg);
-    }
-
-    .btn-reset:disabled {
-      color: GrayText;
     }
 
     .status {

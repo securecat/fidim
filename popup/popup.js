@@ -1,6 +1,6 @@
 const toggle = document.getElementById('toggle');
 const labelText = document.getElementById('toggle-label-text');
-const optionsBtn = document.getElementById('options-btn');
+const optionsLink = document.getElementById('options-link');
 const excludeBtn = document.getElementById('exclude-btn');
 
 const STORAGE_KEY_ENABLED = 'fidim_enabled';
@@ -77,7 +77,10 @@ function updateExcludeBtn(isExcluded) {
   excludeBtn.classList.toggle('is-excluded', isExcluded);
 }
 
-// 設定画面を開く
-optionsBtn.addEventListener('click', () => {
+// 設定画面を開く。ページの移動なので <a> にしたうえで、すでに開いている設定画面のタブがあれば
+// そちらへ切り替えるよう、通常のクリックだけ openOptionsPage() で開く
+optionsLink.addEventListener('click', (e) => {
+  if (e.button !== 0 || e.ctrlKey || e.shiftKey || e.altKey || e.metaKey) return;
+  e.preventDefault();
   chrome.runtime.openOptionsPage();
 });

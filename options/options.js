@@ -16,15 +16,11 @@ const BUILTIN_GROUP_IDS = ['system-ui', 'yu-gothic', 'ms-pgothic', 'meiryo', 'ms
 
 // --- 置換対象フォント ---
 
-const selectiveOptions = document.getElementById('selective-options');
-let currentMode = 'selective';
-
 chrome.storage.sync.get(
   { [STORAGE_KEY_REPLACE_MODE]: 'selective', [STORAGE_KEY_BUILTIN_GROUPS]: DEFAULT_BUILTIN_GROUPS },
   (result) => {
     const mode = result[STORAGE_KEY_REPLACE_MODE];
     document.querySelector(`input[name="replace-mode"][value="${mode}"]`).checked = true;
-    updateSelectiveState(mode);
 
     const groups = { ...DEFAULT_BUILTIN_GROUPS, ...result[STORAGE_KEY_BUILTIN_GROUPS] };
     for (const id of BUILTIN_GROUP_IDS) {
@@ -38,13 +34,13 @@ document.querySelectorAll('input[name="replace-mode"]').forEach(radio => {
   radio.addEventListener('change', () => {
     const mode = document.querySelector('input[name="replace-mode"]:checked').value;
     chrome.storage.sync.set({ [STORAGE_KEY_REPLACE_MODE]: mode });
-    updateSelectiveState(mode);
   });
 });
 
 BUILTIN_GROUP_IDS.forEach(id => {
   const el = document.getElementById(`group-${id}`);
   el.addEventListener('change', () => {
+    selectSelectiveMode();
     chrome.storage.sync.get({ [STORAGE_KEY_BUILTIN_GROUPS]: DEFAULT_BUILTIN_GROUPS }, (result) => {
       const groups = { ...DEFAULT_BUILTIN_GROUPS, ...result[STORAGE_KEY_BUILTIN_GROUPS], [id]: el.checked };
       chrome.storage.sync.set({ [STORAGE_KEY_BUILTIN_GROUPS]: groups });
@@ -52,12 +48,12 @@ BUILTIN_GROUP_IDS.forEach(id => {
   });
 });
 
-function updateSelectiveState(mode) {
-  currentMode = mode;
-  const isSelective = mode === 'selective';
-  selectiveOptions.querySelectorAll('input, button').forEach(el => {
-    el.disabled = !isSelective;
-  });
+// 「個別に選択」の中の選択肢を操作したら、親の「個別に選択」に切り替える
+function selectSelectiveMode() {
+  const selectiveRadio = document.getElementById('mode-selective');
+  if (selectiveRadio.checked) return;
+  selectiveRadio.checked = true;
+  chrome.storage.sync.set({ [STORAGE_KEY_REPLACE_MODE]: 'selective' });
 }
 
 // カスタムフォント
@@ -85,6 +81,7 @@ function parseFontNames(raw) {
 function addCustomFont() {
   const names = parseFontNames(customFontInput.value);
   if (names.length === 0) return;
+  selectSelectiveMode();
   chrome.storage.sync.get({ [STORAGE_KEY_CUSTOM_FONTS]: [] }, (result) => {
     const fonts = result[STORAGE_KEY_CUSTOM_FONTS];
     const existingNames = new Set(fonts.map(f => f.name));
@@ -140,8 +137,10 @@ function renderCustomFontList(fonts) {
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
     checkbox.checked = enabled;
-    checkbox.disabled = currentMode !== 'selective';
-    checkbox.addEventListener('change', () => toggleCustomFont(name, checkbox.checked));
+    checkbox.addEventListener('change', () => {
+      selectSelectiveMode();
+      toggleCustomFont(name, checkbox.checked);
+    });
 
     const span = document.createElement('span');
     span.textContent = name;
@@ -151,7 +150,6 @@ function renderCustomFontList(fonts) {
     const removeBtn = document.createElement('button');
     removeBtn.className = 'btn-reset';
     removeBtn.textContent = '削除';
-    removeBtn.disabled = currentMode !== 'selective';
     removeBtn.setAttribute('aria-label', `${name} を置換対象から削除`);
     removeBtn.addEventListener('click', () => removeCustomFont(name));
 
@@ -193,13 +191,23 @@ fontInput.addEventListener('keydown', (e) => {
   if (e.key === 'Enter') saveBtn.click();
 });
 
+// メッセージは時間では消さない。利用者の注視が別へ移ったとき（ほかのフォームコントロールを操作したとき、
+// 設定画面からフォーカスが外れたとき）にだけ消す
+fontInput.addEventListener('input', clearStatus);
+document.addEventListener('focusin', (e) => {
+  if (!e.target.matches('input, select, textarea, button')) return;
+  if (e.target !== saveBtn && e.target !== resetBtn) clearStatus();
+});
+window.addEventListener('blur', clearStatus);
+
 function showStatus(message, type) {
   status.textContent = message;
   status.className = `status ${type}`;
-  setTimeout(() => {
-    status.textContent = '';
-    status.className = 'status';
-  }, 2000);
+}
+
+function clearStatus() {
+  status.textContent = '';
+  status.className = 'status';
 }
 
 // --- 除外リスト ---
