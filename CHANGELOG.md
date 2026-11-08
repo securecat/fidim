@@ -5,6 +5,12 @@
 形式は [Keep a Changelog](https://keepachangelog.com/ja/1.1.0/) に準拠し、
 バージョン管理は [Semantic Versioning](https://semver.org/lang/ja/) に従います。
 
+## [2.4.1] - 2026-11-08
+
+### 変更
+
+- ポップアップと設定画面のアクセシビリティ改善
+
 ## [2.4.0] - 2026-10-31
 
 ### 追加
