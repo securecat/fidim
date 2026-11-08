@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "FIDIM",
-  "version": "2.4.1",
+  "version": "2.5.0",
   "description": "游ゴシックやメイリオ等を、読みやすい代替フォントに自動で置き換えるChrome拡張機能。置き換えるフォントも、置き換え後のフォントも自由に設定できます。",
   "permissions": [
     "storage",

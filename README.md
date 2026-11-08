@@ -40,10 +40,15 @@ https://chromewebstore.google.com/detail/fidim/bhnahaneodkjfpcofjdhogmhhbaodmcn
 
 ## 更新履歴
 
-### [2.4.1] - 2026-11-08
+### [2.5.0] - 2026-11-09
+
+#### 追加
+
+- Web Components などの Shadow DOM の中（閉じた Shadow DOM を含む）の文字も置換するようにした
+- 設定画面で置換対象フォントの設定を保存したとき、「すべてのフォント」または「個別に選択」の右に「保存しました」と表示するようにした
 
 #### 変更
 
-- ポップアップと設定画面のアクセシビリティ改善
+- 追加したフォントを削除したときも、「個別に選択」に切り替わるようにした
 
 全履歴は [CHANGELOG.md](CHANGELOG.md) を参照。
