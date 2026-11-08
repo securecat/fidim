@@ -8,11 +8,13 @@
     :root {
       color-scheme: light dark;
       --color-secondary: #262626;
+      --color-link: #0017c1;
     }
 
     @media (prefers-color-scheme: dark) {
       :root {
         --color-secondary: #c8c8c8;
+        --color-link: #4DA6FF;
       }
     }
 
@@ -124,9 +126,10 @@
       text-align: right;
     }
 
-    .options-link {
+    .options-link,
+    .options-link:visited {
       font-size: 16px;
-      color: LinkText;
+      color: var(--color-link);
       text-decoration: underline;
     }
 
