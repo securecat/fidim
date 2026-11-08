@@ -64,6 +64,9 @@
   const FULL_RANGE_END = 0x10FFFF;
   const PROBE_FALLBACKS = ['serif', 'sans-serif', 'monospace'];
 
+  // shadow-root-hook.js（MAIN world）が、ページで attachShadow() が呼ばれるたびに送ってくるイベント
+  const SHADOW_ROOT_ATTACHED_EVENT = 'fidim:shadow-root-attached';
+
   let enabled = true;
   let replacementFont = DEFAULT_FONT;
   let replaceMode = 'selective';
@@ -77,6 +80,10 @@
   let fontFaceCount = -1;
   let watchingFontLoading = false;
   let reprocessTimer = null;
+
+  let observer = null;
+  const observedRoots = new WeakSet();
+  let watchingShadowRoots = false;
 
   chrome.storage.sync.get(
     {
@@ -111,6 +118,7 @@
         processAll();
         observe();
         watchFontLoading();
+        watchShadowRoots();
       }
     }
   );
@@ -310,20 +318,100 @@
   }
 
   function processAll() {
-    document.querySelectorAll('*').forEach(processElement);
+    processTree(document);
+  }
+
+  // Document または ShadowRoot の配下の要素をすべて処理する
+  function processTree(root) {
+    root.querySelectorAll('*').forEach(processWithShadow);
+  }
+
+  // 要素とその配下（Shadow DOM の中を含む）をすべて処理する
+  function processSubtree(el) {
+    processWithShadow(el);
+    el.querySelectorAll('*').forEach(processWithShadow);
+  }
+
+  // 要素を処理し、Shadow DOM を持っていればその中も処理して、以後の変化を監視する
+  function processWithShadow(el) {
+    processElement(el);
+    const shadowRoot = getShadowRoot(el);
+    if (shadowRoot) {
+      observeRoot(shadowRoot);
+      processTree(shadowRoot);
+    }
+  }
+
+  // 閉じた Shadow DOM は element.shadowRoot では取得できないため、拡張機能向けのAPIで取得する
+  function getShadowRoot(el) {
+    if (!(el instanceof HTMLElement)) return null;
+    if (chrome.dom?.openOrClosedShadowRoot) return chrome.dom.openOrClosedShadowRoot(el) ?? null;
+    return el.shadowRoot;
   }
 
   function observe() {
-    const observer = new MutationObserver((mutations) => {
-      for (const mutation of mutations) {
-        for (const node of mutation.addedNodes) {
-          if (node.nodeType !== Node.ELEMENT_NODE) continue;
-          processElement(node);
-          node.querySelectorAll('*').forEach(processElement);
+    observeRoot(document.documentElement);
+  }
+
+  // MutationObserver は Shadow DOM の境界を越えて変化を検知しないため、Shadow root ごとに監視する
+  function observeRoot(root) {
+    if (observedRoots.has(root)) return;
+    observedRoots.add(root);
+    if (!observer) {
+      observer = new MutationObserver((mutations) => {
+        for (const mutation of mutations) {
+          for (const node of mutation.addedNodes) {
+            if (node.nodeType !== Node.ELEMENT_NODE) continue;
+            processSubtree(node);
+          }
         }
+      });
+    }
+    observer.observe(root, { childList: true, subtree: true });
+  }
+
+  // まだ監視していない Shadow root を探して処理する
+  function scanShadowRoots(root) {
+    root.querySelectorAll('*').forEach((el) => {
+      const shadowRoot = getShadowRoot(el);
+      if (!shadowRoot) return;
+      if (observedRoots.has(shadowRoot)) {
+        scanShadowRoots(shadowRoot);
+      } else {
+        observeRoot(shadowRoot);
+        processTree(shadowRoot);
       }
     });
-    observer.observe(document.documentElement, { childList: true, subtree: true });
+  }
+
+  // 要素がページに追加されたあとで Shadow root が付くと、ページ側の DOM には変化が起きず、
+  // MutationObserver では気づけない。shadow-root-hook.js からの通知で、付いた時点で監視を始める
+  function watchShadowRoots() {
+    if (watchingShadowRoots) return;
+    watchingShadowRoots = true;
+
+    document.addEventListener(SHADOW_ROOT_ATTACHED_EVENT, (e) => {
+      if (!enabled) return;
+      // 閉じた Shadow DOM の中で付いた場合、イベントの送り元は外側の要素に置き換わって届く
+      const host = e.composedPath()[0];
+      if (!(host instanceof HTMLElement)) return;
+      const shadowRoot = getShadowRoot(host);
+      if (shadowRoot && !observedRoots.has(shadowRoot)) {
+        // attachShadow() の直後に中身が入れられても取りこぼさないよう、監視はすぐに始める
+        observeRoot(shadowRoot);
+        queueMicrotask(() => processTree(shadowRoot));
+      } else if (shadowRoot) {
+        queueMicrotask(() => scanShadowRoots(shadowRoot));
+      }
+    }, true);
+
+    // 宣言的 Shadow DOM（<template shadowrootmode>）は attachShadow() を通らないため、
+    // HTMLの読み込みが終わった時点で、まだ監視していない Shadow root を探す
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => {
+        if (enabled) scanShadowRoots(document);
+      }, { once: true });
+    }
   }
 
   chrome.runtime.onMessage.addListener((message) => {
@@ -333,6 +421,7 @@
         processAll();
         observe();
         watchFontLoading();
+        watchShadowRoots();
       } else if (window.top === window) {
         // トップフレームのreloadで配下のiframeもまとめて再構築されるため、
         // iframe側は個別にreloadしない（多重リロードを防ぐ）
