@@ -7,13 +7,33 @@
   <style>
     :root {
       color-scheme: light dark;
-      --color-secondary: #262626;
+      --color-bg: #FFFFFF;
+      --color-text: #000000;
+      --color-focus-ring: #0066CC;
+      --color-divider: #6D6D6D;
+      --color-toggle-off-bg: #6D6D6D;
+      --color-toggle-on-bg: #0066CC;
+      --color-toggle-thumb: #FFFFFF;
+      --color-exclude-btn-text: #262626;
+      --color-exclude-btn-border: #6D6D6D;
+      --color-exclude-btn-excluded-text: #0011BF;
+      --color-exclude-btn-excluded-border: #0011BF;
       --color-link: #0017c1;
     }
 
     @media (prefers-color-scheme: dark) {
       :root {
-        --color-secondary: #c8c8c8;
+        --color-bg: #121212;
+        --color-text: #FFFFFF;
+        --color-focus-ring: #9E9EFF;
+        --color-divider: #808080;
+        --color-toggle-off-bg: #808080;
+        --color-toggle-on-bg: #9E9EFF;
+        --color-toggle-thumb: #121212;
+        --color-exclude-btn-text: #c8c8c8;
+        --color-exclude-btn-border: #808080;
+        --color-exclude-btn-excluded-text: #9E9EFF;
+        --color-exclude-btn-excluded-border: #9E9EFF;
         --color-link: #4DA6FF;
       }
     }
@@ -28,8 +48,8 @@
       font-family: sans-serif;
       width: 220px;
       padding: 16px;
-      background: Canvas;
-      color: CanvasText;
+      background: var(--color-bg);
+      color: var(--color-text);
     }
 
     .header {
@@ -57,7 +77,7 @@
       width: 36px;
       height: 20px;
       appearance: none;
-      background: GrayText;
+      background: var(--color-toggle-off-bg);
       border-radius: 10px;
       position: relative;
       cursor: pointer;
@@ -65,7 +85,7 @@
     }
 
     .toggle-input:checked {
-      background: LinkText;
+      background: var(--color-toggle-on-bg);
     }
 
     .toggle-input::after {
@@ -73,7 +93,7 @@
       position: absolute;
       width: 14px;
       height: 14px;
-      background: Canvas;
+      background: var(--color-toggle-thumb);
       border-radius: 50%;
       top: 3px;
       left: 3px;
@@ -85,13 +105,13 @@
     }
 
     .toggle-input:focus-visible {
-      outline: 2px solid LinkText;
+      outline: 2px solid var(--color-focus-ring);
       outline-offset: 2px;
     }
 
     .divider {
       border: none;
-      border-top: 1px solid GrayText;
+      border-top: 1px solid var(--color-divider);
       margin-bottom: 12px;
     }
 
@@ -102,9 +122,9 @@
     .exclude-btn {
       font-family: sans-serif;
       font-size: 16px;
-      color: var(--color-secondary);
+      color: var(--color-exclude-btn-text);
       background: none;
-      border: 1px solid GrayText;
+      border: 1px solid var(--color-exclude-btn-border);
       border-radius: 4px;
       padding: 5px 10px;
       cursor: pointer;
@@ -113,12 +133,12 @@
     }
 
     .exclude-btn.is-excluded {
-      color: LinkText;
-      border-color: LinkText;
+      color: var(--color-exclude-btn-excluded-text);
+      border-color: var(--color-exclude-btn-excluded-border);
     }
 
     .exclude-btn:focus-visible {
-      outline: 2px solid LinkText;
+      outline: 2px solid var(--color-focus-ring);
       outline-offset: 2px;
     }
 
@@ -138,7 +158,7 @@
     }
 
     .options-link:focus-visible {
-      outline: 2px solid LinkText;
+      outline: 2px solid var(--color-focus-ring);
       outline-offset: 2px;
       border-radius: 2px;
     }
