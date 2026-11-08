@@ -30,10 +30,28 @@ chrome.storage.sync.get(
   }
 );
 
+// 置換対象フォントの設定は操作した時点で保存されるため、保存したことを操作した項目のラジオボタンの横に表示する
+const modeStatuses = {
+  all: document.getElementById('mode-all-status'),
+  selective: document.getElementById('mode-selective-status'),
+};
+
+function showModeSaved(mode) {
+  for (const [key, el] of Object.entries(modeStatuses)) {
+    el.textContent = key === mode ? '保存しました' : '';
+  }
+}
+
+function clearModeStatus() {
+  for (const el of Object.values(modeStatuses)) {
+    el.textContent = '';
+  }
+}
+
 document.querySelectorAll('input[name="replace-mode"]').forEach(radio => {
   radio.addEventListener('change', () => {
     const mode = document.querySelector('input[name="replace-mode"]:checked').value;
-    chrome.storage.sync.set({ [STORAGE_KEY_REPLACE_MODE]: mode });
+    chrome.storage.sync.set({ [STORAGE_KEY_REPLACE_MODE]: mode }, () => showModeSaved(mode));
   });
 });
 
@@ -43,7 +61,7 @@ BUILTIN_GROUP_IDS.forEach(id => {
     selectSelectiveMode();
     chrome.storage.sync.get({ [STORAGE_KEY_BUILTIN_GROUPS]: DEFAULT_BUILTIN_GROUPS }, (result) => {
       const groups = { ...DEFAULT_BUILTIN_GROUPS, ...result[STORAGE_KEY_BUILTIN_GROUPS], [id]: el.checked };
-      chrome.storage.sync.set({ [STORAGE_KEY_BUILTIN_GROUPS]: groups });
+      chrome.storage.sync.set({ [STORAGE_KEY_BUILTIN_GROUPS]: groups }, () => showModeSaved('selective'));
     });
   });
 });
@@ -70,6 +88,7 @@ customFontAddBtn.addEventListener('click', addCustomFont);
 customFontInput.addEventListener('keydown', (e) => {
   if (e.key === 'Enter') addCustomFont();
 });
+customFontInput.addEventListener('input', clearModeStatus);
 
 function parseFontNames(raw) {
   return raw
@@ -99,15 +118,18 @@ function addCustomFont() {
     chrome.storage.sync.set({ [STORAGE_KEY_CUSTOM_FONTS]: newFonts }, () => {
       customFontInput.value = '';
       renderCustomFontList(newFonts);
+      showModeSaved('selective');
     });
   });
 }
 
 function removeCustomFont(name) {
+  selectSelectiveMode();
   chrome.storage.sync.get({ [STORAGE_KEY_CUSTOM_FONTS]: [] }, (result) => {
     const newFonts = result[STORAGE_KEY_CUSTOM_FONTS].filter(f => f.name !== name);
     chrome.storage.sync.set({ [STORAGE_KEY_CUSTOM_FONTS]: newFonts }, () => {
       renderCustomFontList(newFonts);
+      showModeSaved('selective');
     });
   });
 }
@@ -117,7 +139,7 @@ function toggleCustomFont(name, enabled) {
     const newFonts = result[STORAGE_KEY_CUSTOM_FONTS].map(f =>
       f.name === name ? { ...f, enabled } : f
     );
-    chrome.storage.sync.set({ [STORAGE_KEY_CUSTOM_FONTS]: newFonts });
+    chrome.storage.sync.set({ [STORAGE_KEY_CUSTOM_FONTS]: newFonts }, () => showModeSaved('selective'));
   });
 }
 
@@ -193,12 +215,17 @@ fontInput.addEventListener('keydown', (e) => {
 
 // メッセージは時間では消さない。利用者の注視が別へ移ったとき（ほかのフォームコントロールを操作したとき、
 // 設定画面からフォーカスが外れたとき）にだけ消す
+// 置換対象フォントのメッセージは、操作したコントロールにフォーカスが移った時点でいったん消え、保存が終わると改めて表示される
 fontInput.addEventListener('input', clearStatus);
 document.addEventListener('focusin', (e) => {
   if (!e.target.matches('input, select, textarea, button')) return;
+  clearModeStatus();
   if (e.target !== saveBtn && e.target !== resetBtn) clearStatus();
 });
-window.addEventListener('blur', clearStatus);
+window.addEventListener('blur', () => {
+  clearStatus();
+  clearModeStatus();
+});
 
 function showStatus(message, type) {
   status.textContent = message;

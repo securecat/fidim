@@ -216,6 +216,17 @@
       gap: 3px;
     }
 
+    .mode-label-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0 16px;
+      align-items: baseline;
+    }
+
+    .mode-status {
+      color: var(--color-success);
+    }
+
     .mode-desc {
       color: var(--color-desc);
       line-height: 1.5;
@@ -342,13 +353,19 @@
       <div class="mode-item">
         <input type="radio" name="replace-mode" id="mode-all" value="all">
         <div class="mode-item-text">
-          <label for="mode-all">すべてのフォント</label>
+          <div class="mode-label-row">
+            <label for="mode-all">すべてのフォント</label>
+            <span class="mode-status" id="mode-all-status" aria-live="polite"></span>
+          </div>
           <p class="mode-desc">ウェブページで指定されているすべてのフォントを置換します</p>
         </div>
       </div>
       <div class="mode-item">
         <input type="radio" name="replace-mode" id="mode-selective" value="selective" checked>
-        <label for="mode-selective">個別に選択</label>
+        <div class="mode-label-row">
+          <label for="mode-selective">個別に選択</label>
+          <span class="mode-status" id="mode-selective-status" aria-live="polite"></span>
+        </div>
       </div>
     </fieldset>
 
