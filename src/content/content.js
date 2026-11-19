@@ -61,7 +61,6 @@
 
   // @font-face の unicode-range がこれらと重なれば、日本語の字形を含むとみなす（かな・CJK統合漢字）
   const JAPANESE_RANGES = [[0x3040, 0x30FF], [0x4E00, 0x9FFF]];
-  const FULL_RANGE_END = 0x10FFFF;
   const PROBE_FALLBACKS = ['serif', 'sans-serif', 'monospace'];
 
   // shadow-root-hook.js（MAIN world）が、ページで attachShadow() が呼ばれるたびに送ってくるイベント
@@ -179,23 +178,30 @@
   }
 
   // 優先度の高い順。同じファミリー名に複数の定義があるときは、最も優先度の高い状態を採用する
-  //   'japanese' … unicode-range が日本語の範囲と重なる。読み込み前でも最終的にはそれで表示される
-  //   'probe'    … unicode-range を省略した（全範囲の）定義で、読み込み済み。描画比較で確かめる
-  //   'pending'  … unicode-range を省略した定義で、読み込み前。それで表示される見込みとして扱う
+  //   'japanese' … unicode-range が日本語の範囲と重なるが、見本文字を含まないので描画比較できない。
+  //                読み込み前でも最終的にはそれで表示されるとみなす
+  //   'probe'    … unicode-range が見本文字を含む定義で、読み込み済み。描画比較で確かめる
+  //   'pending'  … unicode-range が見本文字を含む定義で、読み込み前。それで表示される見込みとして扱う
   //   'skip'     … 日本語を含む定義が無い、またはすべて読み込みに失敗した
   const FONT_FACE_STATE_PRIORITY = ['japanese', 'probe', 'pending', 'skip'];
+
+  const PROBE_CODE_POINTS = [...PROBE_TEXT].map(char => char.codePointAt(0));
 
   function getFontFaceState(face) {
     if (face.status === 'error') return 'skip';
     const ranges = parseUnicodeRange(face.unicodeRange);
-    // local("Arial") だけのフォールバック用定義などは全範囲扱いになり、範囲からは判断できない
-    if (ranges.some(([low, high]) => low === 0 && high >= FULL_RANGE_END)) {
-      return face.status === 'loaded' ? 'probe' : 'pending';
-    }
-    // Adobe Fontsのように、ページで使う文字だけを列挙した定義もあるため、範囲の重なりで判断する
     const overlapsJapanese = ranges.some(([low, high]) =>
       JAPANESE_RANGES.some(([jaLow, jaHigh]) => low <= jaHigh && jaLow <= high));
-    return overlapsJapanese ? 'japanese' : 'skip';
+    if (!overlapsJapanese) return 'skip';
+    // unicode-range を省略した（全範囲の）定義や、claude.ai の anthropic-sans のように一部の文字だけを
+    // 除いた広い範囲の定義は、範囲が日本語を含んでいても、フォント自体に日本語の字形があるとは限らない。
+    // 見本文字が範囲に含まれていれば、描画比較で確かめられる
+    const coversProbe = PROBE_CODE_POINTS.every(cp =>
+      ranges.some(([low, high]) => low <= cp && cp <= high));
+    if (coversProbe) return face.status === 'loaded' ? 'probe' : 'pending';
+    // Adobe Fontsのように、ページで使う文字だけを列挙した定義は、見本文字を含まないことがあり
+    // 描画比較ができないため、範囲の重なりで判断する
+    return 'japanese';
   }
 
   // ページが @font-face で定義したフォントの状態を、ファミリー名ごとにまとめる。
