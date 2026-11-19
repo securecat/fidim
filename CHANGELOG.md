@@ -5,6 +5,12 @@
 形式は [Keep a Changelog](https://keepachangelog.com/ja/1.1.0/) に準拠し、
 バージョン管理は [Semantic Versioning](https://semver.org/lang/ja/) に従います。
 
+## [2.5.1] - 2026-11-19
+
+### 修正
+
+- claude.ai で、ユーザーの発話やサイドバーの文字が置換されなくなっていた問題を修正。担当する文字の範囲（`unicode-range`）に日本語を含むものの、日本語の字形を持たないWebフォントを、日本語を表示するフォントと誤って判定していた
+
 ## [2.5.0] - 2026-11-09
 
 ### 追加
