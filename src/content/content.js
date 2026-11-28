@@ -59,8 +59,9 @@
   const PROBE_TEXT = 'あ永';
   const PROBE_FONT_SIZE = 32;
 
-  // @font-face の unicode-range がこれらと重なれば、日本語の字形を含むとみなす（かな・CJK統合漢字）
-  const JAPANESE_RANGES = [[0x3040, 0x30FF], [0x4E00, 0x9FFF]];
+  // @font-face の unicode-range がこれらと重なれば、日本語の字形を含むとみなす（ひらがな・カタカナ・CJK統合漢字）。
+  // 約物だけを持つ YakuHanJP などは中黒（U+30FB）を含むため、仮名のブロックのうち記号類は除いて文字だけにする
+  const JAPANESE_RANGES = [[0x3041, 0x3096], [0x30A1, 0x30FA], [0x4E00, 0x9FFF]];
   const PROBE_FALLBACKS = ['serif', 'sans-serif', 'monospace'];
 
   // shadow-root-hook.js（MAIN world）が、ページで attachShadow() が呼ばれるたびに送ってくるイベント
