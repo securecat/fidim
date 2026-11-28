@@ -40,10 +40,10 @@ https://chromewebstore.google.com/detail/fidim/bhnahaneodkjfpcofjdhogmhhbaodmcn
 
 ## 更新履歴
 
-### [2.5.1] - 2026-11-19
+### [2.5.2] - 2026-11-28
 
 #### 修正
 
-- claude.ai で、ユーザーの発話やサイドバーの文字が置換されなくなっていた問題を修正。claude.ai側の指定フォント名が変わり、変更後のフォントが担当する文字の範囲（`unicode-range`）に日本語を含むものの、日本語の字形を持たないWebフォントとなっており、それを日本語を表示するフォントと誤って判定していた
+- YakuHanJP など、句読点やかっこなどの約物だけを持つWebフォントを先頭に指定しているサイトで、フォントが置換されなかった問題を修正。担当する文字の範囲（`unicode-range`）に中黒「・」が含まれるため、日本語を表示するフォントと誤って判定していた
 
 全履歴は [CHANGELOG.md](CHANGELOG.md) を参照。

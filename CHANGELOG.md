@@ -5,6 +5,12 @@
 形式は [Keep a Changelog](https://keepachangelog.com/ja/1.1.0/) に準拠し、
 バージョン管理は [Semantic Versioning](https://semver.org/lang/ja/) に従います。
 
+## [2.5.2] - 2026-11-28
+
+### 修正
+
+- YakuHanJP など、句読点やかっこなどの約物だけを持つWebフォントを先頭に指定しているサイトで、フォントが置換されなかった問題を修正。担当する文字の範囲（`unicode-range`）に中黒「・」が含まれるため、日本語を表示するフォントと誤って判定していた
+
 ## [2.5.1] - 2026-11-19
 
 ### 修正
